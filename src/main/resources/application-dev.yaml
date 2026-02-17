@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: g_75_shop
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/g_75_shop
+    username: postgres
+    password: ${DB_PASSWORD}
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+server:
+  port: 8081
+  error:
+    include-message=always
+
+logging:
+  file:
+    name: logs/log.log
+  level:
+    root: info
+
+messages:
+  always-use-message-format=true
