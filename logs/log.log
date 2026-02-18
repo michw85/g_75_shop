@@ -15469,3 +15469,48 @@ java.lang.Throwable: Runtime.exit(130)
 2026-02-17T18:44:59.625+01:00  INFO 6396 --- [g_75_shop] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-02-17T18:44:59.627+01:00  INFO 6396 --- [g_75_shop] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-02-17T18:44:59.631+01:00  INFO 6396 --- [g_75_shop] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-17T20:50:39.980+01:00  INFO 19848 --- [g_75_shop] [main] de.ait.g_75_shop.G75ShopApplication      : Starting G75ShopApplication using Java 21.0.7 with PID 19848 (C:\java_advanced\g_75_shop\target\classes started by mvoro in C:\java_advanced\g_75_shop)
+2026-02-17T20:50:39.985+01:00  INFO 19848 --- [g_75_shop] [main] de.ait.g_75_shop.G75ShopApplication      : The following 1 profile is active: "dev"
+2026-02-17T20:50:41.002+01:00  INFO 19848 --- [g_75_shop] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-17T20:50:41.083+01:00  INFO 19848 --- [g_75_shop] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 2 JPA repository interfaces.
+2026-02-17T20:50:41.942+01:00  INFO 19848 --- [g_75_shop] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-02-17T20:50:41.960+01:00  INFO 19848 --- [g_75_shop] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-17T20:50:41.960+01:00  INFO 19848 --- [g_75_shop] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-17T20:50:42.044+01:00  INFO 19848 --- [g_75_shop] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1987 ms
+2026-02-17T20:50:42.334+01:00  INFO 19848 --- [g_75_shop] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-17T20:50:42.641+01:00  INFO 19848 --- [g_75_shop] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7a3f08b6
+2026-02-17T20:50:42.642+01:00  INFO 19848 --- [g_75_shop] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-17T20:50:42.805+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.database                       : Set default schema name to public
+2026-02-17T20:50:43.382+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-02-17T20:50:43.564+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2026-02-17T20:50:43.567+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-02-17T20:50:43.581+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : UPDATE SUMMARY
+2026-02-17T20:50:43.581+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : Run:                          0
+2026-02-17T20:50:43.581+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : Previously run:               8
+2026-02-17T20:50:43.582+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : Filtered out:                 0
+2026-02-17T20:50:43.582+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : -------------------------------
+2026-02-17T20:50:43.582+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : Total change sets:            8
+2026-02-17T20:50:43.589+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.util                           : Update summary generated
+2026-02-17T20:50:43.591+01:00  INFO 19848 --- [g_75_shop] [main] liquibase.command                        : Command execution complete
+2026-02-17T20:50:44.772+01:00  INFO 19848 --- [g_75_shop] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-17T20:50:44.833+01:00  INFO 19848 --- [g_75_shop] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-17T20:50:45.437+01:00  INFO 19848 --- [g_75_shop] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-17T20:50:45.541+01:00  INFO 19848 --- [g_75_shop] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/g_75_shop]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.1
+	Default catalog/schema: g_75_shop/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-17T20:50:46.973+01:00  INFO 19848 --- [g_75_shop] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-17T20:50:46.983+01:00  INFO 19848 --- [g_75_shop] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-17T20:50:47.253+01:00  INFO 19848 --- [g_75_shop] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-17T20:50:49.086+01:00  WARN 19848 --- [g_75_shop] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-17T20:50:49.989+01:00  INFO 19848 --- [g_75_shop] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-02-17T20:50:49.998+01:00  INFO 19848 --- [g_75_shop] [main] de.ait.g_75_shop.G75ShopApplication      : Started G75ShopApplication in 10.753 seconds (process running for 11.409)
+2026-02-17T22:17:30.887+01:00  WARN 19848 --- [g_75_shop] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h18m48s6ms353µs500ns).

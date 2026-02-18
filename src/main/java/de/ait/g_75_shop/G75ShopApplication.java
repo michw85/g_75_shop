@@ -2,9 +2,7 @@ package de.ait.g_75_shop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-/*
-Shop
- */
+
 @SpringBootApplication
 public class G75ShopApplication {
 
@@ -13,3 +11,4 @@ public class G75ShopApplication {
 	}
 
 }
+
