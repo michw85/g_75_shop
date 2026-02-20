@@ -1,6 +1,7 @@
 package de.ait.g_75_shop.dto.product;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 
 import java.math.BigDecimal;
 @Schema(description = "Product DTO for sending to Client")
@@ -10,8 +11,17 @@ public class ProductDto {
     private Long id;
     private String title;
     private BigDecimal price;
+    private String imageUrl;
 
     public ProductDto() {
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {

@@ -172,14 +172,14 @@ public class AspectLogging {
     /**
      * Специализированное логирование для ProductService
      */
-    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.ProductService.save(..))",
+    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.interfaces.ProductService.save(..))",
             returning = "result")
     public void logProductSaved(JoinPoint joinPoint, Object result) {
         Object[] args = joinPoint.getArgs();
         logger.info("📦 НОВЫЙ ТОВАР: Сохранен товар: {}", result);
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.ProductService.update(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.ProductService.update(..))")
     public void logProductUpdated(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length >= 2) {
@@ -188,7 +188,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.ProductService.deleteById(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.ProductService.deleteById(..))")
     public void logProductDeleted(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0) {
@@ -196,7 +196,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.ProductService.restoreById(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.ProductService.restoreById(..))")
     public void logProductRestored(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0) {
@@ -207,14 +207,14 @@ public class AspectLogging {
     /**
      * Специализированное логирование для CustomerService
      */
-    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.CustomerService.save(..))",
+    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.interfaces.CustomerService.save(..))",
             returning = "result")
     public void logCustomerSaved(JoinPoint joinPoint, Object result) {
         Object[] args = joinPoint.getArgs();
         logger.info("👤 НОВЫЙ ПОКУПАТЕЛЬ: Сохранен покупатель: {}", result);
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.CustomerService.update(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.CustomerService.update(..))")
     public void logCustomerUpdated(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length >= 2) {
@@ -223,7 +223,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.CustomerService.deleteById(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.CustomerService.deleteById(..))")
     public void logCustomerDeleted(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0) {
@@ -231,7 +231,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.CustomerService.restoreById(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.CustomerService.restoreById(..))")
     public void logCustomerRestored(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0) {
@@ -242,7 +242,7 @@ public class AspectLogging {
     /**
      * Логирование операций с корзиной
      */
-    @AfterReturning("execution(* de.ait.g_75_shop.service.CustomerService.addProductToCart(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.CustomerService.addProductToCart(..))")
     public void logProductAddedToCart(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length >= 3) {
@@ -251,7 +251,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.CustomerService.removeProductFromCart(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.CustomerService.removeProductFromCart(..))")
     public void logProductRemovedFromCart(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length >= 2) {
@@ -260,7 +260,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning("execution(* de.ait.g_75_shop.service.CustomerService.clearCart(..))")
+    @AfterReturning("execution(* de.ait.g_75_shop.service.interfaces.CustomerService.clearCart(..))")
     public void logCartCleared(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0) {
@@ -268,7 +268,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.CustomerService.getCustomerCartTotalCost(..))",
+    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.interfaces.CustomerService.getCustomerCartTotalCost(..))",
             returning = "result")
     public void logCartTotalCost(JoinPoint joinPoint, Object result) {
         Object[] args = joinPoint.getArgs();
@@ -278,7 +278,7 @@ public class AspectLogging {
         }
     }
 
-    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.CustomerService.getCustomerCartAveragePrice(..))",
+    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.interfaces.CustomerService.getCustomerCartAveragePrice(..))",
             returning = "result")
     public void logCartAveragePrice(JoinPoint joinPoint, Object result) {
         Object[] args = joinPoint.getArgs();
@@ -303,13 +303,13 @@ public class AspectLogging {
         logger.info("📊 СТАТИСТИКА: Всего активных покупателей: {}", result);
     }
 
-    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.ProductService.getAllActiveProductsTotalCost(..))",
+    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.interfaces.ProductService.getAllActiveProductsTotalCost(..))",
             returning = "result")
     public void logProductsTotalCost(Object result) {
         logger.info("📊 СТАТИСТИКА: Общая стоимость всех товаров: {}", result);
     }
 
-    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.ProductService.getAllActiveProductsAveragePrice(..))",
+    @AfterReturning(pointcut = "execution(* de.ait.g_75_shop.service.interfaces.ProductService.getAllActiveProductsAveragePrice(..))",
             returning = "result")
     public void logProductsAveragePrice(Object result) {
         logger.info("📊 СТАТИСТИКА: Средняя цена товаров: {}", result);

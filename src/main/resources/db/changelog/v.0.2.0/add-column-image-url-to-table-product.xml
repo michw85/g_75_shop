@@ -3,8 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="add-column-image-url-to-table-product" author="Michael Vorontsov">
+        <addColumn tableName="product">
+            <column name="image_url" type="varchar(500)">
+                <constraints unique="false" nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 
-    <include file="v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.0.2.0/changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

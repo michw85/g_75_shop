@@ -2,6 +2,7 @@ package de.ait.g_75_shop.exceptions;
 
 import de.ait.g_75_shop.exceptions.types.EntityNotFoundException;
 import de.ait.g_75_shop.exceptions.types.EntityUpdateException;
+import de.ait.g_75_shop.exceptions.types.FileUploadException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,17 @@ public class GlobalExceptionHandler {
         String message = e.getMessage();
         logger.warn("Entity not found: {}", message);
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Обработка исключения FileUploadException (ошибка при обновлении сущности)
+     * Возвращает 400 BAD REQUEST с сообщением об ошибке
+     */
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<String> handleException(FileUploadException e) {
+        String message = e.getMessage();
+        logger.warn(message, e);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -87,6 +100,16 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<String> handleException(NullPointerException e) {
+        String message = e.getMessage();
+        logger.error(message, e);
+        return new ResponseEntity<>(
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<String> handleException(IOException e) {
         String message = e.getMessage();
         logger.error(message, e);
         return new ResponseEntity<>(

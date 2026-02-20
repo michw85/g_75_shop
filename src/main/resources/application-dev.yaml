@@ -11,14 +11,9 @@ spring:
 
 server:
   port: 8081
-  error:
-    include-message=always
 
 logging:
   file:
     name: logs/log.log
   level:
     root: info
-
-messages:
-  always-use-message-format=true

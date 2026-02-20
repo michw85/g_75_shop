@@ -35,8 +35,19 @@ public class Product {
     @Column(name = "active")
     private boolean active;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     public Product() {
         this.active = true;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {

@@ -1,4 +1,4 @@
-package de.ait.g_75_shop.service;
+package de.ait.g_75_shop.service.interfaces;
 import de.ait.g_75_shop.domain.Customer;
 import de.ait.g_75_shop.dto.customer.CustomerDto;
 import de.ait.g_75_shop.dto.customer.CustomerSaveDto;

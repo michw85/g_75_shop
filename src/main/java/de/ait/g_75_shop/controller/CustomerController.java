@@ -3,7 +3,7 @@ package de.ait.g_75_shop.controller;
 import de.ait.g_75_shop.dto.customer.CustomerDto;
 import de.ait.g_75_shop.dto.customer.CustomerSaveDto;
 import de.ait.g_75_shop.dto.customer.CustomerUpdateDto;
-import de.ait.g_75_shop.service.CustomerService;
+import de.ait.g_75_shop.service.interfaces.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

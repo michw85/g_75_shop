@@ -1,10 +1,12 @@
-package de.ait.g_75_shop.service;
+package de.ait.g_75_shop.service.interfaces;
 
 import de.ait.g_75_shop.domain.Product;
 import de.ait.g_75_shop.dto.product.ProductDto;
 import de.ait.g_75_shop.dto.product.ProductSaveDto;
 import de.ait.g_75_shop.dto.product.ProductUpdateDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -38,4 +40,7 @@ public interface ProductService {
     BigDecimal getAllActiveProductsAveragePrice();
 
     boolean isProductActive(Long id);
+
+    // Добавление изображения к продукту
+    void addImage(Long id, MultipartFile image) throws IOException;
 }
