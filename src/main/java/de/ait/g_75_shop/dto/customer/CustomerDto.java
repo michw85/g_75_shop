@@ -15,7 +15,18 @@ public class CustomerDto {
     @Schema(description = "Customer cart", example = "Cart information")
     private CartDto cart;
 
+    @Schema(description = "Customer avatar")
+    private String imageUrl;
+
     public CustomerDto() {
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {

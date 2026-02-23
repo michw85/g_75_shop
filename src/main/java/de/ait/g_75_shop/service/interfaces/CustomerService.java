@@ -3,7 +3,9 @@ import de.ait.g_75_shop.domain.Customer;
 import de.ait.g_75_shop.dto.customer.CustomerDto;
 import de.ait.g_75_shop.dto.customer.CustomerSaveDto;
 import de.ait.g_75_shop.dto.customer.CustomerUpdateDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -48,4 +50,7 @@ public interface CustomerService {
 
     // Очистить корзину
     void clearCart(Long customerId);
+
+    // Добавление изображения к продукту
+    void addImage(Long id, MultipartFile image) throws IOException;
 }

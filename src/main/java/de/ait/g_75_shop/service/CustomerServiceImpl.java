@@ -11,13 +11,16 @@ import de.ait.g_75_shop.exceptions.types.EntityNotFoundException;
 import de.ait.g_75_shop.exceptions.types.EntityUpdateException;
 import de.ait.g_75_shop.repository.CustomerRepository;
 import de.ait.g_75_shop.service.interfaces.CustomerService;
+import de.ait.g_75_shop.service.interfaces.FileService;
 import de.ait.g_75_shop.service.interfaces.ProductService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -31,13 +34,15 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final ProductService productService;
     private final CustomerMapper mapper;
+    private final FileService fileService;
 
     public CustomerServiceImpl(CustomerRepository customerRepository,
                                ProductService productService,
-                               CustomerMapper mapper) {
+                               CustomerMapper mapper, FileService fileService) {
         this.customerRepository = customerRepository;
         this.productService = productService;
         this.mapper = mapper;
+        this.fileService = fileService;
     }
 
     /*
@@ -370,5 +375,17 @@ public class CustomerServiceImpl implements CustomerService {
         // Очищаем корзину
         customer.getCart().clearCart();
         logger.info("Cart of customer ID {} cleared", customerId);
+    }
+
+    @Override
+    @Transactional
+    public void addImage(Long id, MultipartFile image) throws IOException {
+        Objects.requireNonNull(id, "Product id cannot be null");
+
+        Customer customer = getActiveEntityById(id);
+        // Здесь будет обращение к сервису файлов и получение ссылки на файл
+        String imageUrl = fileService.uploadAndGetUrl(image);
+        // Здесь будет присвоение этой ссылки найденному продукту
+        customer.setImageUrl(imageUrl);
     }
 }

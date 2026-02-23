@@ -38,6 +38,9 @@ public class Customer {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "customer")
     private Cart cart;
 
@@ -76,6 +79,14 @@ public class Customer {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
