@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -78,11 +80,11 @@ public class TokenService {
         }
     }
 
-    private Claims getAccessClaims(String accessToken){
+    public Claims getAccessClaims(String accessToken){
         return getClaims(accessToken, accessKey);
     }
 
-    private Claims getRefreshClaims(String refreshToken){
+    public Claims getRefreshClaims(String refreshToken){
         return getClaims(refreshToken, refreshKey);
     }
 
@@ -94,5 +96,19 @@ public class TokenService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public String getTokenFromRequest (HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookieName.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }
