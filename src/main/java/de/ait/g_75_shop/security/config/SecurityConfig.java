@@ -34,6 +34,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/{id:\\d+}").hasAnyRole("ADMIN", "USER")
+
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
                         .anyRequest().denyAll()
                 )
                 .build();

@@ -1,5 +1,6 @@
 package de.ait.g_75_shop.exceptions;
 
+import de.ait.g_75_shop.exceptions.types.AuthorizationException;
 import de.ait.g_75_shop.exceptions.types.EntityNotFoundException;
 import de.ait.g_75_shop.exceptions.types.EntityUpdateException;
 import de.ait.g_75_shop.exceptions.types.FileUploadException;
@@ -156,7 +157,19 @@ public class GlobalExceptionHandler {
         );
     }
 
-
+    /**
+     * Обработка исключения AuthorizationException (ошибка при авторизации)
+     * Возвращает UNAUTHORIZED с сообщением об ошибке
+     */
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<String> handleException(AuthorizationException e) {
+        String message = e.getMessage();
+        logger.warn(message, e);
+        return new ResponseEntity<>(
+                message,
+                HttpStatus.UNAUTHORIZED
+        );
+    }
 
 
 }
