@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/access").permitAll() // даем всем доступ к авторизации
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll() // даем всем доступ к logout
 
+                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
