@@ -1,9 +1,6 @@
 package de.ait.g_75_shop.exceptions;
 
-import de.ait.g_75_shop.exceptions.types.AuthorizationException;
-import de.ait.g_75_shop.exceptions.types.EntityNotFoundException;
-import de.ait.g_75_shop.exceptions.types.EntityUpdateException;
-import de.ait.g_75_shop.exceptions.types.FileUploadException;
+import de.ait.g_75_shop.exceptions.types.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -171,5 +168,15 @@ public class GlobalExceptionHandler {
         );
     }
 
+    /**
+     * Обработка исключения RegistrationException (ошибка при регистрации)
+     * Возвращает 400 BAD_REQUEST с сообщением об ошибке
+     */
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<String> handleException(RegistrationException e) {
+        String message = e.getMessage();
+        logger.warn(message, e);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
 
 }

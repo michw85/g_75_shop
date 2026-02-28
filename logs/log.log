@@ -501,3 +501,52 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2026-02-28T19:01:24.249+01:00  INFO 28260 --- [g_75_shop] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-02-28T19:01:24.252+01:00  INFO 28260 --- [g_75_shop] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-02-28T19:01:24.257+01:00  INFO 28260 --- [g_75_shop] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-28T20:50:56.865+01:00  INFO 21792 --- [g_75_shop] [main] de.ait.g_75_shop.G75ShopApplication      : Starting G75ShopApplication using Java 21.0.7 with PID 21792 (C:\java_advanced\g_75_shop\target\classes started by mvoro in C:\java_advanced\g_75_shop)
+2026-02-28T20:50:56.869+01:00  INFO 21792 --- [g_75_shop] [main] de.ait.g_75_shop.G75ShopApplication      : The following 1 profile is active: "dev"
+2026-02-28T20:50:58.525+01:00  INFO 21792 --- [g_75_shop] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-28T20:50:58.643+01:00  INFO 21792 --- [g_75_shop] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 104 ms. Found 3 JPA repository interfaces.
+2026-02-28T20:50:59.996+01:00  INFO 21792 --- [g_75_shop] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-02-28T20:51:00.018+01:00  INFO 21792 --- [g_75_shop] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-28T20:51:00.018+01:00  INFO 21792 --- [g_75_shop] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+2026-02-28T20:51:00.125+01:00  INFO 21792 --- [g_75_shop] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-02-28T20:51:00.126+01:00  INFO 21792 --- [g_75_shop] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3174 ms
+2026-02-28T20:51:00.431+01:00  INFO 21792 --- [g_75_shop] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-28T20:51:00.726+01:00  INFO 21792 --- [g_75_shop] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7c7ed72a
+2026-02-28T20:51:00.729+01:00  INFO 21792 --- [g_75_shop] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-28T20:51:00.941+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.database                       : Set default schema name to public
+2026-02-28T20:51:02.140+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-02-28T20:51:02.574+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2026-02-28T20:51:02.577+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-02-28T20:51:02.593+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : UPDATE SUMMARY
+2026-02-28T20:51:02.593+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : Run:                          0
+2026-02-28T20:51:02.595+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : Previously run:              16
+2026-02-28T20:51:02.595+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : Filtered out:                 0
+2026-02-28T20:51:02.595+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : -------------------------------
+2026-02-28T20:51:02.595+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : Total change sets:           16
+2026-02-28T20:51:02.597+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.util                           : Update summary generated
+2026-02-28T20:51:02.599+01:00  INFO 21792 --- [g_75_shop] [main] liquibase.command                        : Command execution complete
+2026-02-28T20:51:03.628+01:00  INFO 21792 --- [g_75_shop] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-28T20:51:03.716+01:00  INFO 21792 --- [g_75_shop] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.41.Final
+2026-02-28T20:51:03.768+01:00  INFO 21792 --- [g_75_shop] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-02-28T20:51:04.214+01:00  INFO 21792 --- [g_75_shop] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-28T20:51:04.322+01:00  INFO 21792 --- [g_75_shop] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 18.1
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-28T20:51:05.788+01:00  INFO 21792 --- [g_75_shop] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-28T20:51:05.800+01:00  INFO 21792 --- [g_75_shop] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-28T20:51:06.629+01:00  INFO 21792 --- [g_75_shop] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-28T20:51:08.857+01:00  WARN 21792 --- [g_75_shop] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-28T20:51:09.466+01:00  INFO 21792 --- [g_75_shop] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userServiceImpl
+2026-02-28T20:51:10.389+01:00  WARN 21792 --- [g_75_shop] [main] o.s.b.a.f.FreeMarkerAutoConfiguration    : Cannot find template location: [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.check-template-location=false)
+2026-02-28T20:51:10.623+01:00  INFO 21792 --- [g_75_shop] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-02-28T20:51:10.638+01:00  INFO 21792 --- [g_75_shop] [main] de.ait.g_75_shop.G75ShopApplication      : Started G75ShopApplication in 14.723 seconds (process running for 15.528)
+2026-02-28T20:51:36.976+01:00  INFO 21792 --- [g_75_shop] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-28T20:51:36.985+01:00  INFO 21792 --- [g_75_shop] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-02-28T20:51:36.991+01:00  INFO 21792 --- [g_75_shop] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-28T20:51:36.995+01:00  INFO 21792 --- [g_75_shop] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-28T20:51:37.007+01:00  INFO 21792 --- [g_75_shop] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
