@@ -3,16 +3,27 @@ package de.ait.g_75_shop.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration properties for DigitalOcean Spaces
+ * Binds properties with prefix "do" from application.properties/yml
+ *
+ * Свойства конфигурации для DigitalOcean Spaces
+ * Связывает свойства с префиксом "do" из application.properties/yml
+ */
 @Configuration
 @ConfigurationProperties(prefix = "do")
 public class DOProperties {
-
+    /**
+     * DigitalOcean Spaces keys, endpoint URL, region, bucket
+     * Ключи, URL эндпоинт, регион, имя бакета для хранения файлов DigitalOcean Spaces
+     */
     private String accessKey;
     private String secretKey;
     private String endpoint;
     private String region;
     private String bucket;
 
+    // Getters and Setters with comments / Геттеры и сеттеры с комментариями
     public String getAccessKey() {
         return accessKey;
     }

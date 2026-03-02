@@ -7,6 +7,13 @@ import org.hibernate.validator.constraints.Length;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * Product entity representing items available for purchase
+ * Contains product information like title, price, and availability
+ *
+ * Сущность товара, представляющая товары, доступные для покупки
+ * Содержит информацию о товаре: название, цена и доступность
+ */
 @Entity
 @Table(name = "product")
 public class Product {
@@ -16,6 +23,17 @@ public class Product {
     @Column(name = "id")
     private Long id;
 
+    /**
+     * Product title validation:
+     * - NotNull: title cannot be null
+     * - NotBlank: title cannot be empty
+     * - Pattern: starts with capital letter, at least 3 characters, only letters and spaces
+     *
+     * Валидация названия товара:
+     * - NotNull: название не может быть null
+     * - NotBlank: название не может быть пустым
+     * - Pattern: начинается с заглавной буквы, минимум 3 символа, только буквы и пробелы
+     */
     @NotNull(message = "Product title cannot be null")
     @NotBlank(message = "Product title cannot be empty")
 //    @Length(min = 3, max = 50)
@@ -26,22 +44,42 @@ public class Product {
     @Column(name = "title", nullable = false, unique = true)
     private String title;
 
+    /**
+     * Product price validation:
+     * - NotNull: price cannot be null
+     * - DecimalMin: price must be >= 0.00
+     * - DecimalMax: price must be < 1000.00 (exclusive)
+     *
+     * Валидация цены товара:
+     * - NotNull: цена не может быть null
+     * - DecimalMin: цена должна быть >= 0.00
+     * - DecimalMax: цена должна быть < 1000.00 (исключительно)
+     */
     @NotNull(message = "Product price cannot be null")
     @DecimalMin(value = "0.00", message = "Product price should be greater or equal than 0")
     @DecimalMax(value = "1000.00", inclusive = false, message = "Product price should be lesser than 1000")
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    /**
+     * Soft delete flag - true means product is active and available for purchase
+     * Флаг мягкого удаления - true означает, что товар активен и доступен для покупки
+     */
     @Column(name = "active")
     private boolean active;
 
+    /**
+     * URL to product image
+     * URL изображения товара
+     */
     @Column(name = "image_url")
     private String imageUrl;
 
     public Product() {
-        this.active = true;
+        this.active = true; // New products are active by default / Новые товары активны по умолчани
     }
 
+    // Getters and setters / Геттеры и сеттеры
     public String getImageUrl() {
         return imageUrl;
     }
@@ -82,6 +120,7 @@ public class Product {
         this.active = active;
     }
 
+    // equals, hashCode, toString methods / методы equals, hashCode, toString
     @Override
     public boolean equals(Object o) {
         if (this == o) {

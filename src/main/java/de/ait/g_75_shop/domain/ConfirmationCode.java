@@ -5,6 +5,13 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Entity for email confirmation codes
+ * Used during user registration to verify email address
+ *
+ * Сущность для кодов подтверждения email
+ * Используется при регистрации пользователя для подтверждения email адреса
+ */
 @Entity
 @Table(name = "confirmation_code")
 public class ConfirmationCode {
@@ -14,12 +21,27 @@ public class ConfirmationCode {
     @Column(name = "id")
     private Long id;
 
+    /**
+     * Confirmation code value (usually random string)
+     * Значение кода подтверждения (обычно случайная строка)
+     */
     @Column(name = "value")
     private String value;
 
+    /**
+     * Expiration date/time of the confirmation code
+     * Дата/время истечения срока действия кода подтверждения
+     */
     @Column(name = "expiration")
     private LocalDateTime expiration;
 
+    /**
+     * User associated with this confirmation code
+     * Many-to-one relationship (one user can have multiple codes)
+     *
+     * Пользователь, связанный с этим кодом подтверждения
+     * Отношение многие-к-одному (один пользователь может иметь несколько кодов)
+     */
     @ManyToOne
     @JoinColumn(name = "account_id")
     private User user;
@@ -27,6 +49,7 @@ public class ConfirmationCode {
     public ConfirmationCode() {
     }
 
+    // Getters and setters / Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -59,6 +82,7 @@ public class ConfirmationCode {
         this.user = user;
     }
 
+    // equals, hashCode, toString methods / методы equals, hashCode, toString
     @Override
     public boolean equals(Object o) {
         if (this == o) {

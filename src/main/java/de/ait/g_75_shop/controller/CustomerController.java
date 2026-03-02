@@ -17,6 +17,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
+ * REST Controller for managing customers
+ * All endpoints start with /customers
+ * <p>
  * REST контроллер для работы с покупателями
  * Все endpoints начинаются с /customers
  */
@@ -27,14 +30,22 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    /**
+     * Constructor with dependency injection
+     * Конструктор с внедрением зависимости
+     *
+     * @param customerService service for customer operations / сервис для операций с покупателями
+     */
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
     /**
+     * Creates a new customer
      * POST /customers - создание нового покупателя
-     * @param saveDto данные нового покупателя (с валидацией)
-     * @return созданный покупатель
+     *
+     * @param saveDto new customer data with validation / данные нового покупателя (с валидацией)
+     * @return created customer / созданный покупатель
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,7 +59,10 @@ public class CustomerController {
     }
 
     /**
+     * Gets all active customers
      * GET /customers - получение всех активных покупателей
+     *
+     * @return list of active customers / список активных покупателей
      */
     @GetMapping
     @Operation(summary = "Get all Customers", description = "Get all active Customers from Database")
@@ -58,7 +72,9 @@ public class CustomerController {
 
     /**
      * GET /customers/{id} - получение покупателя по ID
-     * @param id идентификатор покупателя
+     *
+     * @param id customer identifier / идентификатор покупателя
+     * @return customer DTO / DTO покупателя
      */
     @GetMapping("/{id}")
     @Operation(summary = "Get Customer by ID", description = "Get active Customer by its identifier")
@@ -71,9 +87,10 @@ public class CustomerController {
     }
 
     /**
-     * PUT /customers/{id} - обновление имени покупателя
-     * @param id идентификатор покупателя
-     * @param updateDto новые данные (с валидацией)
+     * PUT /customers/{id} - Updates customer name / обновление имени покупателя
+     *
+     * @param id        customer identifier / идентификатор покупателя
+     * @param updateDto new customer data with validation / новые данные (с валидацией)
      */
     @PutMapping("/{id}")
     @Operation(summary = "Update Customer", description = "Update Customer name by its identifier")
@@ -89,8 +106,9 @@ public class CustomerController {
     }
 
     /**
-     * DELETE /customers/{id} - мягкое удаление покупателя
-     * @param id идентификатор покупателя
+     * DELETE /customers/{id} - Soft deletes customer by ID / мягкое удаление покупателя
+     *
+     * @param id customer identifier / идентификатор покупателя
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -104,7 +122,8 @@ public class CustomerController {
     }
 
     /**
-     * PUT /customers/{id}/restore - восстановление удаленного покупателя
+     * PUT /customers/{id}/restore - Restores previously deleted customer / восстановление удаленного покупателя
+     *
      * @param id идентификатор покупателя
      */
     @PutMapping("/{id}/restore")
@@ -118,7 +137,9 @@ public class CustomerController {
     }
 
     /**
-     * GET /customers/count - количество активных покупателей
+     * GET /customers/count -  Gets count of active customers / количество активных покупателей
+     *
+     * @return number of active customers / количество активных покупателей
      */
     @GetMapping("/count")
     @Operation(summary = "Get Customers count", description = "Get total count of active Customers")
@@ -127,8 +148,10 @@ public class CustomerController {
     }
 
     /**
-     * GET /customers/{id}/cart/total-cost - общая стоимость корзины
+     * GET /customers/{id}/cart/total-cost -  Gets total cost of customer's cart / общая стоимость корзины
+     *
      * @param id идентификатор покупателя
+     * @return total cart cost / общая стоимость корзины
      */
     @GetMapping("/{id}/cart/total-cost")
     @Operation(summary = "Get Cart total cost", description = "Get total cost of Customer's cart")
@@ -141,8 +164,10 @@ public class CustomerController {
     }
 
     /**
-     * GET /customers/{id}/cart/avg-price - средняя цена в корзине
-     * @param id идентификатор покупателя
+     * GET /customers/{id}/cart/avg-price - Gets average price in customer's cart / средняя цена в корзине
+     *
+     * @param id customer identifier / идентификатор покупателя
+     * @return average price / средняя цена
      */
     @GetMapping("/{id}/cart/avg-price")
     @Operation(summary = "Get Cart average price", description = "Get average price of products in Customer's cart")
@@ -155,10 +180,11 @@ public class CustomerController {
     }
 
     /**
-     * POST /customers/{customerId}/cart/products/{productId} - добавление товара в корзину
-     * @param customerId идентификатор покупателя
-     * @param productId идентификатор товара
-     * @param quantity количество (по умолчанию 1)
+     * POST /customers/{customerId}/cart/products/{productId} - Adds product to customer's cart / добавление товара в корзину
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @param productId  product identifier /  идентификатор товара
+     * @param quantity   quantity to add (default: 1) /  количество (по умолчанию 1)
      */
     @PostMapping("/{customerId}/cart/products/{productId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -178,9 +204,10 @@ public class CustomerController {
     }
 
     /**
-     * DELETE /customers/{customerId}/cart/products/{productId} - удаление товара из корзины
-     * @param customerId идентификатор покупателя
-     * @param productId идентификатор товара
+     * DELETE /customers/{customerId}/cart/products/{productId} - Removes product from customer's cart / удаление товара из корзины
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @param productId  product identifier / идентификатор товара
      */
     @DeleteMapping("/{customerId}/cart/products/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -197,8 +224,9 @@ public class CustomerController {
     }
 
     /**
-     * DELETE /customers/{id}/cart - очистка корзины
-     * @param id идентификатор покупателя
+     * DELETE /customers/{id}/cart - Clears customer's cart completely / очистка корзины
+     *
+     * @param id customer identifier / идентификатор покупателя
      */
     @DeleteMapping("/{id}/cart")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -211,7 +239,16 @@ public class CustomerController {
         customerService.clearCart(id);
     }
 
-    // Добавить картинку к конкретному продукту по его идентификатору
+    /**
+     * Adds image to customer profile
+     * POST /customers/{id}/image with multipart/form-data
+     *
+     * Добавляет изображение в профиль покупателя
+     *
+     * @param id customer identifier / идентификатор покупателя
+     * @param image image file to upload / файл изображения для загрузки
+     * @throws IOException if file processing fails / если ошибка обработки файла
+     */
     // POST -> http://10.20.30.40:8081/products/7/image
     @PostMapping(value = "/{id}/image", consumes = "multipart/form-data")
     public void addImage(@PathVariable Long id, @RequestParam MultipartFile image) throws IOException {

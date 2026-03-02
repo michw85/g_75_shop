@@ -6,11 +6,19 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+/**
+ * User entity for authentication and authorization
+ * Represents system users with different roles
+ * <p>
+ * Сущность пользователя для аутентификации и авторизации
+ * Представляет пользователей системы с разными ролями
+ */
 @Entity
 // SELECT * FROM user - Postgres такой запрос не поймёт. user - уже зарезервирован им. только если `user`
 //@Table(name = "user")
 @Table(name = "account")
-public class User{
+// 'user' is a reserved keyword in PostgreSQL, using 'account' instead / зарезервированное слово в PostgreSQL, используем 'account'
+public class User {
 
 
     @Id
@@ -18,18 +26,44 @@ public class User{
     @Column(name = "id")
     private Long id;
 
+    /**
+     * User's email address (used as username)
+     * Адрес электронной почты пользователя (используется как имя пользователя)
+     */
     @Column(name = "email")
     private String email;
 
+    /**
+     * Encrypted password
+     * Зашифрованный пароль
+     */
     @Column(name = "password")
     private String password;
 
+    /**
+     * User's display name
+     * Отображаемое имя пользователя
+     */
     @Column(name = "name")
     private String name;
 
+    /**
+     * Email confirmation status
+     * If false, user cannot log in
+     *
+     * Статус подтверждения email
+     * Если false, пользователь не может войти
+     */
     @Column(name = "confirmed")
     private boolean confirmed;
 
+    /**
+     * User's role (ADMIN or USER)
+     * Stored as string in database
+     *
+     * Роль пользователя (ADMIN или USER)
+     * Хранится как строка в базе данных
+     */
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -37,6 +71,7 @@ public class User{
     public User() {
     }
 
+    // Getters and setters / Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -85,6 +120,7 @@ public class User{
         this.role = role;
     }
 
+    // equals, hashCode, toString methods / методы equals, hashCode, toString
     @Override
     public boolean equals(Object o) {
         if (this == o) {
