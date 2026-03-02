@@ -4,6 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 
 import java.math.BigDecimal;
+
+/**
+ * Product DTO for sending product data to client
+ * Contains basic product information without sensitive data
+ *
+ * DTO товара для отправки данных товара клиенту
+ * Содержит основную информацию о товаре без чувствительных данных
+ */
 @Schema(description = "Product DTO for sending to Client")
 public class ProductDto {
 

@@ -3,6 +3,13 @@ import de.ait.g_75_shop.dto.product.ProductDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
+/**
+ * Position DTO for sending cart position data to client
+ * Contains product, quantity, and calculated total price
+ *
+ * DTO позиции для отправки данных позиции корзины клиенту
+ * Содержит товар, количество и вычисленную общую стоимость
+ */
 @Schema(description = "Position DTO for sending to Client")
 public class PositionDto {
 

@@ -4,6 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.util.Set;
 
+/**
+ * Cart DTO for sending cart data to client
+ * Contains cart summary information and positions
+ *
+ * DTO корзины для отправки данных корзины клиенту
+ * Содержит сводную информацию о корзине и позиции
+ */
 @Schema(description = "Cart DTO for sending to Client")
 public class CartDto {
 

@@ -1,5 +1,12 @@
 package de.ait.g_75_shop.dto.user;
 
+/**
+ * DTO for user registration
+ * Contains all necessary information for creating a new user account
+ *
+ * DTO для регистрации пользователя
+ * Содержит всю необходимую информацию для создания новой учетной записи
+ */
 public class UserRegistrationDto {
 
     private String email;

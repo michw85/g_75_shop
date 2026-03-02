@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
+ * DTO for updating customer name
+ * Contains validation for the new name
+ *
  * DTO для обновления имени покупателя
  * Содержит валидацию нового имени
  */

@@ -7,8 +7,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
+ * DTO for saving new customer
+ * Contains validation rules for customer name
+ *
  * DTO для сохранения нового покупателя
- * Содержит валидацию полей
+ * Содержит правила валидации для имени покупателя
  */
 @Schema(description = "Customer DTO for saving new Customer to Database")
 public class CustomerSaveDto {

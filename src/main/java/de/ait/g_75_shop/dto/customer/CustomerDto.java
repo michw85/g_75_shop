@@ -3,6 +3,13 @@ package de.ait.g_75_shop.dto.customer;
 import de.ait.g_75_shop.dto.cart.CartDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Customer DTO for sending customer data to client
+ * Contains customer information and their cart
+ *
+ * DTO покупателя для отправки данных клиенту
+ * Содержит информацию о покупателе и его корзине
+ */
 @Schema(description = "Customer DTO for sending to Client")
 public class CustomerDto {
 
