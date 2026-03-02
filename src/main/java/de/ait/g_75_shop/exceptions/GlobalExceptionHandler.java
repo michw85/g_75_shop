@@ -18,8 +18,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Глобальный обработчик исключений для всех контроллеров
- * Перехватывает исключения и возвращает понятные сообщения клиенту
+ * Maps ProductSaveDto to new Product entity
+ * Ignores system fields (id, active)
+ *
+ * Преобразует ProductSaveDto в новую сущность Product
+ * Игнорирует системные поля (id, active)
+ *
+ * @param dto DTO with product data / DTO с данными товара
+ * @return new Product entity / новая сущность товара
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,8 +33,14 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
+     * Handles EntityNotFoundException (entity not found)
+     * Returns 404 NOT FOUND with error message
+     *
      * Обработка исключения EntityNotFoundException (сущность не найдена)
      * Возвращает 404 NOT FOUND с сообщением об ошибке
+     *
+     * @param e the exception / исключение
+     * @return response with 404 status and message / ответ со статусом 404 и сообщением
      */
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleException(EntityNotFoundException e) {
@@ -38,8 +50,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Обработка исключения FileUploadException (ошибка при обновлении сущности)
+     * Handles FileUploadException (error during file upload)
+     * Returns 400 BAD REQUEST with error message
+     *
+     * Обработка исключения FileUploadException (ошибка при загрузке файла)
      * Возвращает 400 BAD REQUEST с сообщением об ошибке
+     *
+     * @param e the exception / исключение
+     * @return response with 400 status and message / ответ со статусом 400 и сообщением
      */
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<String> handleException(FileUploadException e) {
@@ -49,9 +67,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles EntityUpdateException (error during entity update)
+     * Returns 400 BAD REQUEST with error message
+     * Logged at WARN level as business error
+     *
      * Обработка исключения EntityUpdateException (ошибка при обновлении сущности)
      * Возвращает 400 BAD REQUEST с сообщением об ошибке
      * Логируется на уровне WARN как бизнес-ошибка
+     *
+     * @param e the exception / исключение
+     * @return response with 400 status and message / ответ со статусом 400 и сообщением
      */
     @ExceptionHandler(EntityUpdateException.class)
     public ResponseEntity<String> handleEntityUpdate(EntityUpdateException e) {
@@ -61,8 +86,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles ConstraintViolationException (validation errors at method parameter level)
+     * Returns 400 BAD REQUEST with list of error messages
+     *
      * Обработка ConstraintViolationException (ошибки валидации на уровне параметров методов)
      * Возвращает 400 BAD REQUEST со списком сообщений об ошибках
+     *
+     * @param e the exception / исключение
+     * @return response with 400 status and error list / ответ со статусом 400 и списком ошибок
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<List<String>> handleConstraintViolation(ConstraintViolationException e) {
@@ -77,8 +108,14 @@ public class GlobalExceptionHandler {
 
 
     /**
+     * Handles MethodArgumentNotValidException (@Valid validation errors in request body)
+     * Returns 400 BAD REQUEST with list of field-specific error messages
+     *
      * Обработка MethodArgumentNotValidException (ошибки валидации @Valid в теле запроса)
-     * Возвращает 400 BAD REQUEST со списком сообщений об ошибках
+     * Возвращает 400 BAD REQUEST со списком сообщений об ошибках по полям
+     *
+     * @param e the exception / исключение
+     * @return response with 400 status and field error list / ответ со статусом 400 и списком ошибок полей
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<String>> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
@@ -93,8 +130,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles NullPointerException (attempt to use null)
+     * Returns 500 INTERNAL SERVER ERROR as this is typically a server-side bug
+     *
      * Обработка NullPointerException (попытка использовать null)
-     * Возвращает 400 BAD REQUEST (так как это ошибка клиента)
+     * Возвращает 500 INTERNAL SERVER ERROR, так как это обычно ошибка на стороне сервера
+     *
+     * @param e the exception / исключение
+     * @return response with 500 status / ответ со статусом 500
      */
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<String> handleException(NullPointerException e) {
@@ -106,6 +149,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    /**
+     * Handles IOException (input/output errors)
+     * Returns 500 INTERNAL SERVER ERROR
+     *
+     * Обработка IOException (ошибки ввода/вывода)
+     * Возвращает 500 INTERNAL SERVER ERROR
+     *
+     * @param e the exception / исключение
+     * @return response with 500 status / ответ со статусом 500
+     */
     @ExceptionHandler(IOException.class)
     public ResponseEntity<String> handleException(IOException e) {
         String message = e.getMessage();
@@ -117,8 +170,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles MethodArgumentTypeMismatchException (invalid parameter type)
+     * For example, passing string instead of number for ID
+     * Returns 400 BAD REQUEST
+     *
      * Обработка MethodArgumentTypeMismatchException (неверный тип параметра)
      * Например, передача строки вместо числа в ID
+     * Возвращает 400 BAD REQUEST
+     *
+     * @param e the exception / исключение
+     * @return response with 400 status and message / ответ со статусом 400 и сообщением
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
@@ -129,7 +190,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles HttpMessageNotReadableException (malformed JSON)
+     * Returns 400 BAD REQUEST
+     *
      * Обработка HttpMessageNotReadableException (некорректный JSON)
+     * Возвращает 400 BAD REQUEST
+     *
+     * @param e the exception / исключение
+     * @return response with 400 status and message / ответ со статусом 400 и сообщением
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
@@ -141,9 +209,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles all other exceptions (unexpected errors)
+     * Returns 500 INTERNAL SERVER ERROR
+     * Logged at ERROR level
+     *
      * Обработка всех остальных исключений (непредвиденные ошибки)
      * Возвращает 500 INTERNAL SERVER ERROR
      * Логируется на уровне ERROR
+     *
+     * @param e the exception / исключение
+     * @return generic error message / общее сообщение об ошибке
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception e) {
@@ -155,8 +230,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles AuthorizationException (authentication/authorization errors)
+     * Returns 401 UNAUTHORIZED
+     *
      * Обработка исключения AuthorizationException (ошибка при авторизации)
      * Возвращает UNAUTHORIZED с сообщением об ошибке
+     *
+     * @param e the exception / исключение
+     * @return response with 401 status and message / ответ со статусом 401 и сообщением
      */
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<String> handleException(AuthorizationException e) {
@@ -169,8 +250,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Обработка исключения RegistrationException (ошибка при регистрации)
+            * Handles RegistrationException (errors during user registration)
+     * Returns 400 BAD_REQUEST
+     *
+             * Обработка исключения RegistrationException (ошибка при регистрации)
      * Возвращает 400 BAD_REQUEST с сообщением об ошибке
+     *
+             * @param e the exception / исключение
+     * @return response with 400 status and message / ответ со статусом 400 и сообщением
      */
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<String> handleException(RegistrationException e) {
