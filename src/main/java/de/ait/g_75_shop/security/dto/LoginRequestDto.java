@@ -1,5 +1,12 @@
 package de.ait.g_75_shop.security.dto;
 
+/**
+ * DTO for login request
+ * Contains user credentials for authentication
+ *
+ * DTO для запроса входа в систему
+ * Содержит учетные данные пользователя для аутентификации
+ */
 public class LoginRequestDto {
 
     private String email;
