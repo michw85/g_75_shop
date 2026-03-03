@@ -19,16 +19,24 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 /**
  * Spring Security configuration class
  * Defines security rules, filters, and authentication mechanisms
- * <p>
+ * Includes configurable CSRF protection
+ *
  * Класс конфигурации Spring Security
  * Определяет правила безопасности, фильтры и механизмы аутентификации
+ * Включает настраиваемую CSRF защиту
  */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    // По умолчанию система csrf будет работать
+    /**
+     * CSRF protection enabled flag (default: true)
+     * Can be disabled via application properties for development
+     *
+     * Флаг включения CSRF защиты (по умолчанию: true)
+     * Может быть отключен через свойства приложения для разработки
+     */
     @Value("${security.csrf-enabled:true}")
     private boolean csrfEnabled;
 
@@ -49,11 +57,11 @@ public class SecurityConfig {
     /**
      * Configures security filter chain
      * Defines which endpoints are public, which require authentication,
-     * and adds JWT token filter
-     * <p>
+     * adds JWT token filter, and configures CSRF protection
+     *
      * Настраивает цепочку фильтров безопасности
      * Определяет, какие endpoint'ы публичные, какие требуют аутентификации,
-     * и добавляет JWT токен фильтр
+     * добавляет JWT токен фильтр и настраивает CSRF защиту
      *
      * @param http   HttpSecurity configuration / конфигурация HttpSecurity
      * @param filter JWT token filter / JWT токен фильтр
@@ -66,11 +74,14 @@ public class SecurityConfig {
                 // Disable CSRF protection (not needed for REST API with JWT)
                 // Отключаем защиту CSRF (не нужна для REST API с JWT)
 //                .csrf(AbstractHttpConfigurer::disable) - если оставить token в cookie есть опасность csrf-атаки
+
+                // CSRF configuration / Конфигурация CSRF:
                 .csrf(x -> {
                             if (csrfEnabled) {
-                                        // внутренний репозиторий Spring security для csrf Token
+                                // Enable CSRF protection with cookie repository (HttpOnly=false for frontend access)
+                                // Включаем CSRF защиту с cookie репозиторием (HttpOnly=false для доступа с фронтенда)
                                 x.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                        // исключаем эндпоинты из csrf-защиты
+                                        // Exclude these endpoints from CSRF protection / Исключаем эти эндпоинты из CSRF-защиты
                                         .ignoringRequestMatchers(
                                                 "/v3/api-docs/**",
                                                 "/swagger-ui/**",
@@ -80,6 +91,7 @@ public class SecurityConfig {
                                                 "/auth/logout"
                                         );
                             } else {
+// Disable CSRF protection (not recommended for production) / Отключаем CSRF защиту (не рекомендуется для продакшена)
                                 x.disable();
                             }
                         }
@@ -92,21 +104,17 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 //                .httpBasic(Customizer.withDefaults()) - для обычной авторизации с логином и паролем
-                // Disable HTTP Basic authentication
-                // Отключаем HTTP Basic аутентификацию
+                // Disable HTTP Basic authentication / Отключаем HTTP Basic аутентификацию
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // Configure authorization rules
-                // Настраиваем правила авторизации
+                // Configure authorization rules / Настраиваем правила авторизации
                 .authorizeHttpRequests(x -> x
-                        // Product endpoints
-                        // Товары: только ADMIN может создавать
+                        // Product endpoints / Товары: только ADMIN может создавать
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
                         // GET /products - доступно всем
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
                         // GET /products/{id} - доступно ADMIN и USER
                         .requestMatchers(HttpMethod.GET, "/products/{id:\\d+}").hasAnyRole("ADMIN", "USER")
-                        // Authentication/Registration endpoints - public
-                        // Эндпоинты аутентификации/регистрации  - публичные
+                        // Authentication/Registration endpoints - public / Эндпоинты аутентификации/регистрации  - публичные
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll() // даем всем доступ к логину
                         .requestMatchers(HttpMethod.POST, "/auth/access").permitAll() // даем всем доступ к авторизации
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll() // даем всем доступ к logout
@@ -114,17 +122,16 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
 
+                        // Swagger/OpenAPI endpoints - public
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        // All other requests are denied by default
-                        // Все остальные запросы по умолчанию запрещены
+                        // All other requests are denied by default / Все остальные запросы по умолчанию запрещены
                         .anyRequest().denyAll()
                 )
-                // Add JWT token filter before Spring's authentication filter
-                // Добавляем JWT токен фильтр перед фильтром аутентификации Spring
+                // Add JWT token filter before Spring's authentication filter / Добавляем JWT токен фильтр перед фильтром аутентификации Spring
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

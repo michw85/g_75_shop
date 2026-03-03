@@ -20,6 +20,12 @@ public class UserController {
 
     private final UserService service;
 
+    /**
+     * Constructor with dependency injection
+     * Конструктор с внедрением зависимости
+     *
+     * @param service user service / сервис пользователей
+     */
     public UserController(UserService service) {
         this.service = service;
     }
@@ -36,7 +42,8 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@RequestBody UserRegistrationDto registrationDto) {
-        // обращение к сервису
+        // Call service to handle registration
+        // Обращение к сервису для обработки регистрации
         service.register(registrationDto);
         return "Registration complete. Please check your email.";
     }

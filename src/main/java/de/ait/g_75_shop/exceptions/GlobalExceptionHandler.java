@@ -18,14 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Maps ProductSaveDto to new Product entity
- * Ignores system fields (id, active)
+ * Global exception handler for all controllers
+ * Intercepts exceptions and returns user-friendly messages to clients
  *
- * Преобразует ProductSaveDto в новую сущность Product
- * Игнорирует системные поля (id, active)
- *
- * @param dto DTO with product data / DTO с данными товара
- * @return new Product entity / новая сущность товара
+ * Глобальный обработчик исключений для всех контроллеров
+ * Перехватывает исключения и возвращает понятные сообщения клиенту
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -269,6 +266,7 @@ public class GlobalExceptionHandler {
     /**
      * Handles EmailSendingException (errors during user-registration email)
      * Returns 500 INTERNAL SERVER ERROR
+     * Logged at ERROR level
      *
      * Обработка исключения EmailSendingException (ошибка при отправке письма-подтверждения регистрации пользователю)
      * Возвращает 500 INTERNAL SERVER ERROR

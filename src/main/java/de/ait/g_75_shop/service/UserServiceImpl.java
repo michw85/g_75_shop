@@ -26,6 +26,14 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailServiceImpl emailService;
 
+    /**
+     * Constructor with dependency injection
+     * Конструктор с внедрением зависимости
+     *
+     * @param repository user repository / репозиторий пользователей
+     * @param passwordEncoder password encoder / кодировщик паролей
+     * @param emailService email service / сервис email
+     */
     public UserServiceImpl(
             UserRepository repository,
             BCryptPasswordEncoder passwordEncoder,

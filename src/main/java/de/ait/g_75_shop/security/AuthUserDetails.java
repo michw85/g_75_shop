@@ -40,8 +40,7 @@ public class AuthUserDetails implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convert user's role to Spring Security authority
-        // Преобразуем роль пользователя в authority Spring Security
+        // Convert user's role to Spring Security authority / Преобразуем роль пользователя в authority Spring Security
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
 //        return Collections.singleton(authority); // - если бы было несколько ролей сразу
         return List.of(authority); // return collection of GrantedAuthority objects / возвращаем коллекцию объектов (Set, List...) GrantedAuthority
@@ -79,8 +78,7 @@ public class AuthUserDetails implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        // Use confirmed field for account activation
-        // Используем поле confirmed для активации аккаунта
+        // Use confirmed field for account activation / Используем поле confirmed для активации аккаунта
         return user.isConfirmed();
     }
 

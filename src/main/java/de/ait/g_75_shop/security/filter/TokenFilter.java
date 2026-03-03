@@ -32,6 +32,13 @@ public class TokenFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final UserService userService;
 
+    /**
+     * Constructor with dependency injection
+     * Конструктор с внедрением зависимости
+     *
+     * @param tokenService service for JWT token operations / сервис для операций с JWT токенами
+     * @param userService user service for loading user details / сервис пользователей для загрузки деталей
+     */
     public TokenFilter(TokenService tokenService, UserService userService) {
         this.tokenService = tokenService;
         this.userService = userService;
@@ -50,34 +57,27 @@ public class TokenFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Extract access token from cookie
-        // Извлекаем access токен из cookie
+        // Extract access token from cookie / Извлекаем access токен из cookie
         String accessToken = tokenService.getTokenFromRequest(request, ACCESS_TOKEN_COOKIE_NAME);
 
-        // If token exists and is valid, authenticate the user
-        // Если токен существует и валиден, аутентифицируем пользователя
+        // If token exists and is valid, authenticate the user / Если токен существует и валиден, аутентифицируем пользователя
         if (accessToken != null & tokenService.validateAccessToken(accessToken)) {
-            // Get claims from token
-            // Получаем claims из токена
+            // Get claims from token / Получаем claims из токена
             Claims claims = tokenService.getAccessClaims(accessToken);
             String email = claims.getSubject();
-            // Load user details from database
-            // Загружаем детали пользователя из базы данных
+            // Load user details from database / Загружаем детали пользователя из базы данных
             UserDetails userDetails = userService.loadUserByUsername(email);
 
-            // Create authentication token
-            // Создаем токен аутентификации
+            // Create authentication token / Создаем токен аутентификации
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities()
             );
 
-            // Set authentication in SecurityContext
-            // Устанавливаем аутентификацию в SecurityContext
+            // Set authentication in SecurityContext / Устанавливаем аутентификацию в SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
-        // Continue filter chain
-        // Продолжаем цепочку фильтров
+        // Continue filter chain / Продолжаем цепочку фильтров
         filterChain.doFilter(request, response);
     }
 }

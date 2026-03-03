@@ -16,10 +16,12 @@ import static de.ait.g_75_shop.constants.Constants.REFRESH_TOKEN_COOKIE_NAME;
  * Authentication controller
  * Handles login, token refresh, and logout operations
  * Uses cookies for token storage (HttpOnly for security)
+ * Also provides CSRF token endpoint for frontend
  *
  * Контроллер аутентификации
  * Обрабатывает операции входа, обновления токена и выхода
  * Использует cookies для хранения токенов (HttpOnly для безопасности)
+ * Также предоставляет endpoint для CSRF токена для фронтенда
  */
 @RestController
 @RequestMapping("/auth")
@@ -27,6 +29,12 @@ public class AuthController {
 
     private final AuthService service;
 
+    /**
+     * Constructor with dependency injection
+     * Конструктор с внедрением зависимости
+     *
+     * @param service authentication service / сервис аутентификации
+     */
     public AuthController(AuthService service) {
         this.service = service;
     }
@@ -108,7 +116,15 @@ public class AuthController {
         response.addCookie(refreshCookie);
     }
 
-    // Отправка клиенту Csrf Token (Spring security)
+    /**
+     * Provides CSRF token for frontend (Spring Security CSRF protection)
+     * GET /auth/csrf
+     *
+     * Предоставляет CSRF токен для фронтенда (CSRF защита Spring Security)
+     *
+     * @param csrfToken CSRF token from Spring Security / CSRF токен от Spring Security
+     * @return CSRF token object / объект CSRF токена
+     */
     @GetMapping("/csrf")
     public CsrfToken csrfToken(CsrfToken csrfToken) {
         return csrfToken;

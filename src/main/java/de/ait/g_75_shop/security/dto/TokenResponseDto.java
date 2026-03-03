@@ -12,6 +12,10 @@ public class TokenResponseDto {
     private String accessToken;
     private String refreshToken;
 
+    /**
+     * Default constructor
+     * Конструктор по умолчанию
+     */
     public TokenResponseDto() {
     }
 

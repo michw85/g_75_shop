@@ -16,6 +16,7 @@ public class UserRegistrationDto {
     public UserRegistrationDto() {
     }
 
+    // Getters and setters / Геттеры и сеттеры
     public String getEmail() {
         return email;
     }

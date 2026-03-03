@@ -46,9 +46,21 @@ public class ConfirmationCode {
     @JoinColumn(name = "account_id")
     private User user;
 
+    /**
+     * Default constructor
+     * Конструктор по умолчанию
+     */
     public ConfirmationCode() {
     }
 
+    /**
+     * Constructor with all fields
+     * Конструктор со всеми полями
+     *
+     * @param value confirmation code value / значение кода подтверждения
+     * @param expiration expiration date/time / дата/время истечения
+     * @param user user associated with this code / пользователь, связанный с кодом
+     */
     public ConfirmationCode(String value, LocalDateTime expiration, User user) {
         this.value = value;
         this.expiration = expiration;

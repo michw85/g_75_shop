@@ -12,9 +12,14 @@ public class LoginRequestDto {
     private String email;
     private String password;
 
+    /**
+     * Default constructor
+     * Конструктор по умолчанию
+     */
     public LoginRequestDto() {
     }
 
+    // Getters and setters / Геттеры и сеттеры
     public String getEmail() {
         return email;
     }
