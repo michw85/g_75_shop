@@ -55,16 +55,18 @@ public class AuthService {
         String email = requestDto.getEmail();
         UserDetails userDetails = userService.loadUserByUsername(email);
 
-        // Verify password
-        // Проверяем пароль
+        // Check if user is enabled (confirmed) / Проверяем, активирован ли пользователь (подтвержден)
+        if (!userDetails.isEnabled()) {
+            throw new AuthorizationException("Account not confirmed. Please check your email.");
+        }
+
+        // Verify password / Проверяем пароль
         if (passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())){
-            // Generate tokens
-            // Генерируем токены
+            // Generate tokens / Генерируем токены
             String accessToken = tokenService.generateAccessToken(email);
             String refreshToken = tokenService.generateRefreshToken(email);
 
-            // Store refresh token for future validation
-            // Сохраняем refresh токен для будущей проверки
+            // Store refresh token for future validation / Сохраняем refresh токен для будущей проверки
             refreshStorage.put(email, refreshToken);
             return new TokenResponseDto(accessToken, refreshToken);
         } else {
@@ -82,23 +84,25 @@ public class AuthService {
      * @throws AuthorizationException if refresh token is invalid / если refresh токен недействителен
      */
     public TokenResponseDto getAccessToken(HttpServletRequest request) {
-        // Extract refresh token from cookie
-        // Извлекаем refresh токен из cookie
+        // Extract refresh token from cookie / Извлекаем refresh токен из cookie
         String refreshToken = tokenService.getTokenFromRequest(request, REFRESH_TOKEN_COOKIE_NAME);
 
-        // Validate refresh token
-        // Проверяем refresh токен
+        // Validate refresh token / Проверяем refresh токен
         if (refreshToken != null && tokenService.validateRefreshToken(refreshToken)) {
             Claims claims = tokenService.getRefreshClaims(refreshToken);
             String email = claims.getSubject();
 
-            // Check if stored refresh token matches
-            // Проверяем соответствие сохраненного refresh токена
+            // Verify user is still confirmed / Проверяем, что пользователь все еще подтвержден
+            UserDetails userDetails = userService.loadUserByUsername(email);
+            if (!userDetails.isEnabled()) {
+                throw new AuthorizationException("Account is not confirmed");
+            }
+
+            // Check if stored refresh token matches / Проверяем соответствие сохраненного refresh токена
             String saveRefreshToken = refreshStorage.get(email);
 
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)){
-                // Generate new access token
-                // Генерируем новый access токен
+                // Generate new access token / Генерируем новый access токен
                 String accessToken = tokenService.generateAccessToken(email);
                 return new TokenResponseDto(accessToken);
             }
@@ -114,12 +118,10 @@ public class AuthService {
      * @param request HTTP request containing refresh token cookie / HTTP запрос с refresh токеном
      */
     public void removeUserRefreshToken (HttpServletRequest request) {
-        // Extract refresh token from cookie
-        // Извлекаем refresh токен из cookie
+        // Extract refresh token from cookie / Извлекаем refresh токен из cookie
         String refreshToken = tokenService.getTokenFromRequest(request, REFRESH_TOKEN_COOKIE_NAME);
 
-        // If token exists and is valid, remove it from storage
-        // Если токен существует и валиден, удаляем его из хранилища
+        // If token exists and is valid, remove it from storage / Если токен существует и валиден, удаляем его из хранилища
         if (refreshToken != null && tokenService.validateRefreshToken(refreshToken)) {
             Claims claims = tokenService.getRefreshClaims(refreshToken);
             String email = claims.getSubject();

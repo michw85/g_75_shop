@@ -1,11 +1,11 @@
 package de.ait.g_75_shop.controller;
 
+import de.ait.g_75_shop.dto.user.UserConfirmationDto;
 import de.ait.g_75_shop.dto.user.UserRegistrationDto;
 import de.ait.g_75_shop.service.interfaces.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST Controller for user management
@@ -46,5 +46,42 @@ public class UserController {
         // Обращение к сервису для обработки регистрации
         service.register(registrationDto);
         return "Registration complete. Please check your email.";
+    }
+
+    /**
+     * Confirm user registration with confirmation code
+     * GET /users/confirm/{code}
+     *
+     * Подтвердить регистрацию пользователя по коду подтверждения
+     *
+     * @param code confirmation code from email / код подтверждения из email
+     * @return success message / сообщение об успехе
+     */
+    @GetMapping("/confirm/{code}")
+    public ResponseEntity<String> confirmUser(@PathVariable String code) {
+        boolean confirmed = service.confirmUser(code);
+
+        if (confirmed) {
+            return ResponseEntity.ok("Email successfully confirmed. You can now log in.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Confirmation failed. Invalid or expired code.");
+        }
+    }
+
+    /**
+     * Alternative: confirm with code in request body (POST)
+     * Альтернатива: подтверждение с кодом в теле запроса
+     */
+    @PostMapping("/confirm")
+    public ResponseEntity<String> confirmUserWithBody(@RequestBody UserConfirmationDto confirmationDto) {
+        boolean confirmed = service.confirmUser(confirmationDto.getCode());
+
+        if (confirmed) {
+            return ResponseEntity.ok("Email successfully confirmed. You can now log in.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Confirmation failed. Invalid or expired code.");
+        }
     }
 }

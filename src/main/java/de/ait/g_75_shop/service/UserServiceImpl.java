@@ -1,16 +1,21 @@
 package de.ait.g_75_shop.service;
 
+import de.ait.g_75_shop.domain.ConfirmationCode;
 import de.ait.g_75_shop.domain.User;
 import de.ait.g_75_shop.domain.enums.Role;
 import de.ait.g_75_shop.dto.user.UserRegistrationDto;
 import de.ait.g_75_shop.exceptions.types.RegistrationException;
 import de.ait.g_75_shop.repository.UserRepository;
 import de.ait.g_75_shop.security.AuthUserDetails;
+import de.ait.g_75_shop.service.interfaces.ConfirmationCodeService;
 import de.ait.g_75_shop.service.interfaces.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * Implementation of UserService interface
@@ -25,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailServiceImpl emailService;
+    private final ConfirmationCodeService confirmationCodeService;
 
     /**
      * Constructor with dependency injection
@@ -37,10 +43,11 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(
             UserRepository repository,
             BCryptPasswordEncoder passwordEncoder,
-            EmailServiceImpl emailService) {
+            EmailServiceImpl emailService, ConfirmationCodeService confirmationCodeService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.confirmationCodeService = confirmationCodeService;
     }
 
     /**
@@ -106,5 +113,33 @@ public class UserServiceImpl implements UserService {
 
         // Send confirmation email / отправляем email о том, что пользователь должен подтвердить регистрацию
         emailService.sendConfirmationEmail(user);
+    }
+
+    @Override
+    @Transactional
+    public boolean confirmUser(String code) {
+        // Find confirmation code
+        // Находим код подтверждения
+        ConfirmationCode confirmationCode = confirmationCodeService.findByCode(code)
+                .orElseThrow(() -> new RegistrationException("Invalid confirmation code"));
+
+        // Check if code is expired
+        // Проверяем, не истек ли срок действия кода
+        if (confirmationCode.getExpiration().isBefore(LocalDateTime.now())) {
+            confirmationCodeService.delete(confirmationCode);
+            throw new RegistrationException("Confirmation code has expired");
+        }
+
+        // Get user and confirm them
+        // Получаем пользователя и подтверждаем его
+        User user = confirmationCode.getUser();
+        user.setConfirmed(true);
+        repository.save(user);
+
+        // Delete used confirmation code
+        // Удаляем использованный код подтверждения
+        confirmationCodeService.delete(confirmationCode);
+
+        return true;
     }
 }

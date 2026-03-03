@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -88,7 +87,10 @@ public class SecurityConfig {
                                                 "/swagger-ui.html",
                                                 "/auth/login",
                                                 "/auth/access",
-                                                "/auth/logout"
+                                                "/auth/logout",
+                            // Allow confirmation endpoints without CSRF / Разрешаем эндпоинты подтверждения без CSRF
+                                                "/users/register",
+                                                "/users/confirm/**"
                                         );
                             } else {
 // Disable CSRF protection (not recommended for production) / Отключаем CSRF защиту (не рекомендуется для продакшена)

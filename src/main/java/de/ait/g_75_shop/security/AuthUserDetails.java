@@ -78,7 +78,8 @@ public class AuthUserDetails implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        // Use confirmed field for account activation / Используем поле confirmed для активации аккаунта
+        // CRITICAL FIX: Only confirmed users can log in
+        // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Только подтвержденные пользователи могут войти
         return user.isConfirmed();
     }
 

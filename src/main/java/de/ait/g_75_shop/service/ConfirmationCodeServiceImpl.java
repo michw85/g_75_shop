@@ -7,6 +7,7 @@ import de.ait.g_75_shop.service.interfaces.ConfirmationCodeService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -51,5 +52,15 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
         ConfirmationCode entity = new ConfirmationCode(value, expiration,user);
         repository.save(entity);
         return value;
+    }
+
+    @Override
+    public Optional<ConfirmationCode> findByCode(String code) {
+        return repository.findByValue(code);
+    }
+
+    @Override
+    public void delete(ConfirmationCode code) {
+        repository.delete(code);
     }
 }
