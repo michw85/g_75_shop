@@ -35,6 +35,13 @@ import java.util.Objects;
 9. Мы в коде класса обращаемся к repository и вызываем его методы для доступа к БД
 */
 
+/**
+ * Implementation of ProductService interface
+ * Provides business logic for product operations
+ *
+ * Реализация интерфейса ProductService
+ * Предоставляет бизнес-логику для операций с товарами
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -50,11 +57,16 @@ public class ProductServiceImpl implements ProductService {
         this.fileService = fileService;
     }
 
-    //    @Override
-//    public Product save(Product product) {
-//        product.setActive(true);
-//        return repository.save(product);
-//    }
+    /**
+     * Saves a new product
+     * Automatically sets product as active
+     *
+     * Сохраняет новый товар
+     * Автоматически устанавливает товар как активный
+     *
+     * @param saveDto DTO with product data / DTO с данными товара
+     * @return saved product as DTO / сохраненный товар в виде DTO
+     */
     @Override
     public ProductDto save(ProductSaveDto saveDto) {
         Objects.requireNonNull(saveDto, "ProductSaveDto cannot be null");
@@ -69,6 +81,14 @@ public class ProductServiceImpl implements ProductService {
         return mapper.mapEntityToDto(entity);
     }
 
+
+    /**
+     * Gets all active products
+     *
+     * Получает все активные товары
+     *
+     * @return list of active product DTOs / список DTO активных товаров
+     */
     @Override
     public List<ProductDto> getAllActiveProducts() {
         return repository.findAllByActiveTrue()
@@ -77,6 +97,15 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
+    /**
+     * Gets active product entity by ID
+     *
+     * Получает активный товар (сущность) по ID
+     *
+     * @param id product identifier / идентификатор товара
+     * @return product entity / сущность товара
+     * @throws EntityNotFoundException if product not found or inactive / если товар не найден или неактивен
+     */
     @Override
     public Product getActiveEntityById(Long id) {
         Objects.requireNonNull(id, "Product id cannot be null");
@@ -86,12 +115,28 @@ public class ProductServiceImpl implements ProductService {
                 );
     }
 
+    /**
+     * Gets active product DTO by ID
+     *
+     * Получает активный товар (DTO) по ID
+     *
+     * @param id product identifier / идентификатор товара
+     * @return product DTO / DTO товара
+     */
     @Override
     public ProductDto getActiveProductById(Long id) {
         Product product = getActiveEntityById(id);
         return mapper.mapEntityToDto(product);
     }
 
+    /**
+     * Updates product price
+     *
+     * Обновляет цену товара
+     *
+     * @param id product identifier / идентификатор товара
+     * @param updateDto DTO with new price / DTO с новой ценой
+     */
     @Override
     @Transactional
     public void update(Long id, ProductUpdateDto updateDto) {
@@ -105,6 +150,13 @@ public class ProductServiceImpl implements ProductService {
         logger.info("Product id {} updated, new price : {}", id, updateDto.getNewPrice());
     }
 
+    /**
+     * Soft deletes product (deactivates)
+     *
+     * Мягкое удаление товара (деактивация)
+     *
+     * @param id product identifier / идентификатор товара
+     */
     @Override
     @Transactional
     public void deleteById(Long id) {
@@ -117,6 +169,13 @@ public class ProductServiceImpl implements ProductService {
 //                });
     }
 
+    /**
+     * Restores previously deleted product (activates)
+     *
+     * Восстанавливает удаленный товар (активация)
+     *
+     * @param id product identifier / идентификатор товара
+     */
     @Override
     @Transactional
     public void restoreById(Long id) {
@@ -131,11 +190,25 @@ public class ProductServiceImpl implements ProductService {
 //                });
     }
 
+    /**
+     * Gets count of active products
+     *
+     * Получает количество активных товаров
+     *
+     * @return count of active products / количество активных товаров
+     */
     @Override
     public long getAllActiveProductsCount() {
         return repository.countByActiveTrue();
     }
 
+    /**
+     * Gets total cost of all active products
+     *
+     * Получает общую стоимость всех активных товаров
+     *
+     * @return total cost / общая стоимость
+     */
     @Override
     public BigDecimal getAllActiveProductsTotalCost() {
 
@@ -146,6 +219,13 @@ public class ProductServiceImpl implements ProductService {
                 .orElse(BigDecimal.ZERO);
     }
 
+    /**
+     * Gets average price of active products
+     *
+     * Получает среднюю цену активных товаров
+     *
+     * @return average price / средняя цена
+     */
     @Override
     public BigDecimal getAllActiveProductsAveragePrice() {
         long productsCount = getAllActiveProductsCount();
@@ -156,20 +236,37 @@ public class ProductServiceImpl implements ProductService {
                 BigDecimal.valueOf(productsCount), 2, RoundingMode.HALF_UP);
     }
 
+    /**
+     * Checks if product is active
+     *
+     * Проверяет, активен ли товар
+     *
+     * @param id product identifier / идентификатор товара
+     * @return true if active, false otherwise / true если активен, иначе false
+     */
     @Override
     public boolean isProductActive(Long id) {
         return repository.existsByIdAndActiveTrue(id);
     }
 
+    /**
+     * Adds image to product
+     *
+     * Добавляет изображение к товару
+     *
+     * @param id product identifier / идентификатор товара
+     * @param image image file to upload / файл изображения для загрузки
+     * @throws IOException if file processing fails / если ошибка обработки файла
+     */
     @Override
     @Transactional
     public void addImage(Long id, MultipartFile image) throws IOException {
         Objects.requireNonNull(id, "Product id cannot be null");
 
         Product product = getActiveEntityById(id);
-        // Здесь будет обращение к сервису файлов и получение ссылки на файл
+        // Upload file and get URL / Загружаем файл и получаем ссылку
         String imageUrl = fileService.uploadAndGetUrl(image);
-        // Здесь будет присвоение этой ссылки найденному продукту
+        // Set image URL to product / Присваиваем ссылку товару
         product.setImageUrl(imageUrl);
     }
 }

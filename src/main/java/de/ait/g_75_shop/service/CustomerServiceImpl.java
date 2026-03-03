@@ -26,6 +26,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of CustomerService interface
+ * Provides business logic for customer operations
+ *
+ * Реализация интерфейса CustomerService
+ * Предоставляет бизнес-логику для операций с покупателями
+ */
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -45,44 +52,51 @@ public class CustomerServiceImpl implements CustomerService {
         this.fileService = fileService;
     }
 
-    /*
-     * Сохранение нового покупателя
-     * @param saveDto DTO с данными покупателя
-     * @return сохраненный покупатель в виде DTO
-     * @throws NullPointerException если saveDto null
+    /**
+     * Saves a new customer
+     * Creates customer and automatically creates an empty cart for them
+     *
+     * Сохраняет нового покупателя
+     * Создает покупателя и автоматически создает для него пустую корзину
+     *
+     * @param saveDto DTO with customer data / DTO с данными покупателя
+     * @return saved customer as DTO / сохраненный покупатель в виде DTO
+     * @throws NullPointerException if saveDto is null / если saveDto null
      */
     @Override
     public CustomerDto save(CustomerSaveDto saveDto) {
-        // Проверка на null
+        // Null check / Проверка на null
         Objects.requireNonNull(saveDto, "CustomerSaveDto cannot be null");
 
-        // Преобразуем DTO в сущность
+        // Convert DTO to entity / Преобразуем DTO в сущность
         Customer customer = mapper.mapDtoToEntity(saveDto);
 
-        // Устанавливаем покупателя как активного
+        // Set customer as active / Устанавливаем покупателя как активного
         customer.setActive(true);
 
-        // Сохраняем покупателя
+        // Save customer / Сохраняем покупателя
         Customer savedCustomer = customerRepository.save(customer);
         logger.info("Customer saved with ID: {}", savedCustomer.getId());
 
-        // Создаем и связываем корзину
+        // Create and link cart / Создаем и связываем корзину
         Cart cart = new Cart();
         cart.setCustomer(savedCustomer);
         savedCustomer.setCart(cart);
 
-        // Сохраняем покупателя с корзиной
+        // Save customer with cart / Сохраняем покупателя с корзиной
         savedCustomer = customerRepository.save(savedCustomer);
         logger.info("Cart created for customer ID: {}", savedCustomer.getId());
 
-        // Возвращаем DTO
+        // Return DTO / Возвращаем DTO
         return mapper.mapEntityToDto(savedCustomer);
     }
 
     /**
-     * Получение всех активных покупателей
+     * Gets all active customers
      *
-     * @return список DTO активных покупателей
+     * Получает всех активных покупателей
+     *
+     * @return list of active customer DTOs / список DTO активных покупателей
      */
     @Override
     public List<CustomerDto> getAllActiveCustomers() {
@@ -93,12 +107,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Получение активного покупателя по ID (сущность)
+     * Gets active customer entity by ID
      *
-     * @param id идентификатор покупателя
-     * @return сущность покупателя
-     * @throws NullPointerException    если id null
-     * @throws EntityNotFoundException если покупатель не найден или неактивен
+     * Получает активного покупателя (сущность) по ID
+     *
+     * @param id customer identifier / идентификатор покупателя
+     * @return customer entity / сущность покупателя
+     * @throws NullPointerException if id is null / если id null
+     * @throws EntityNotFoundException if customer not found or inactive / если покупатель не найден или неактивен
      */
     @Override
     public Customer getActiveEntityById(Long id) {
@@ -113,10 +129,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Получение активного покупателя по ID (DTO)
+            * Gets active customer DTO by ID
      *
-     * @param id идентификатор покупателя
-     * @return DTO покупателя
+             * Получает активного покупателя (DTO) по ID
+     *
+             * @param id customer identifier / идентификатор покупателя
+     * @return customer DTO / DTO покупателя
      */
     @Override
     public CustomerDto getActiveCustomerById(Long id) {
@@ -127,12 +145,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Обновление имени покупателя
+     * Updates customer name
      *
-     * @param id        идентификатор покупателя
-     * @param updateDto DTO с новым именем
-     * @throws NullPointerException    если параметры null
-     * @throws EntityNotFoundException если покупатель не найден
+     * Обновляет имя покупателя
+     *
+     * @param id customer identifier / идентификатор покупателя
+     * @param updateDto DTO with new name / DTO с новым именем
+     * @throws NullPointerException if parameters are null / если параметры null
+     * @throws EntityNotFoundException if customer not found / если покупатель не найден
      */
     @Override
     @Transactional
@@ -142,25 +162,26 @@ public class CustomerServiceImpl implements CustomerService {
 //                    mapper.updateEntity(existingCustomer, updateDto);
 //                });
 
-        // Проверка на null
+        // Null checks / Проверка на null
         Objects.requireNonNull(id, "Customer ID cannot be null");
         Objects.requireNonNull(updateDto, "CustomerUpdateDto cannot be null");
 
-        // Получаем существующего покупателя
+        // Get existing customer / Получаем существующего покупателя
         Customer existingCustomer = getActiveEntityById(id);
 
-        // Обновляем имя
+        // Update name / Обновляем имя
         existingCustomer.setName(updateDto.getNewName());
 
         logger.info("Customer ID {} updated. New name: '{}'", id, updateDto.getNewName());
     }
 
     /**
+     * Soft deletes customer (deactivates)
+     *
      * Мягкое удаление покупателя (деактивация)
      *
-     * @param id идентификатор покупателя
+     * @param id customer identifier / идентификатор покупателя
      */
-
     @Override
     @Transactional
     public void deleteById(Long id) {
@@ -175,9 +196,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Восстановление удаленного покупателя (активация)
+     * Restores previously deleted customer (activates)
      *
-     * @param id идентификатор покупателя
+     * Восстанавливает удаленного покупателя (активация)
+     *
+     * @param id customer identifier / идентификатор покупателя
      */
     @Override
     @Transactional
@@ -196,9 +219,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Получение количества активных покупателей
+     * Gets count of active customers
      *
-     * @return количество активных покупателей
+     * Получает количество активных покупателей
+     *
+     * @return count of active customers / количество активных покупателей
      */
     @Override
     public long getAllActiveCustomersCount() {
@@ -206,10 +231,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Получение общей стоимости корзины покупателя
+     * Gets total cost of customer's cart
      *
-     * @param customerId идентификатор покупателя
-     * @return общая стоимость корзины
+     * Получает общую стоимость корзины покупателя
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @return total cart cost / общая стоимость корзины
      */
     @Override
     public BigDecimal getCustomerCartTotalCost(Long customerId) {
@@ -221,10 +248,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Получение средней цены товаров в корзине покупателя
+     * Gets average price in customer's cart
      *
-     * @param customerId идентификатор покупателя
-     * @return средняя цена
+     * Получает среднюю цену товаров в корзине покупателя
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @return average price / средняя цена
      */
     @Override
     public BigDecimal getCustomerCartAveragePrice(Long customerId) {
@@ -236,17 +265,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Добавление товара в корзину покупателя
+     * Adds product to customer's cart with validation
      *
-     * @param customerId идентификатор покупателя
-     * @param productId  идентификатор товара
-     * @param quantity   количество товара
-     * @throws EntityUpdateException если товар неактивен или количество некорректно
+     * Добавляет товар в корзину покупателя с валидацией
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @param productId product identifier / идентификатор товара
+     * @param quantity quantity to add / количество для добавления
+     * @throws EntityUpdateException if product inactive, quantity invalid, or cart limits exceeded
+     *                               если товар неактивен, количество некорректно или превышены лимиты корзины
      */
     @Override
     @Transactional
     public void addProductToCart(Long customerId, Long productId, int quantity) {
-        // Проверка параметров на null
+        // Null checks / Проверка параметров на null
         Objects.requireNonNull(customerId, "Customer ID cannot be null");
         Objects.requireNonNull(productId, "Product ID cannot be null");
 
@@ -257,7 +289,7 @@ public class CustomerServiceImpl implements CustomerService {
 //            return;
 //        }
 
-        // Проверяем количество
+        // Validate quantity / Проверяем количество
         if (quantity <= 0) {
             throw new EntityUpdateException(
                     String.format("Quantity must be positive. Provided: %d", quantity));
@@ -269,14 +301,14 @@ public class CustomerServiceImpl implements CustomerService {
             );
         }
 
-        // Проверяем существование активного покупателя
+        // Get customer / Проверяем существование активного покупателя
         Customer customer = getActiveEntityById(customerId);
         if (customer == null) {
             System.out.println("Покупатель с ID " + customerId + " не найден или не активен");
             return;
         }
 
-        // Получаем товар (проверяем, что он активен)
+        // Get product (check if active) / Получаем товар (проверяем, что он активен)
         Product product;
         try {
             product = productService.getActiveEntityById(productId);
@@ -287,7 +319,7 @@ public class CustomerServiceImpl implements CustomerService {
             );
         }
 
-        // Получаем или создаем корзину
+        // Get or create cart / Получаем или создаем корзину
         Cart cart = customer.getCart();
         if (cart == null) {
             cart = new Cart();
@@ -296,14 +328,14 @@ public class CustomerServiceImpl implements CustomerService {
             logger.debug("New cart created for customer ID: {}", customerId);
         }
 
-        // Проверяем, не превышен ли лимит позиций в корзине
+        // Check cart size limit / Проверяем, не превышен ли лимит позиций в корзине
         if (cart.getPositions().size() >= 50) {
             throw new EntityUpdateException(
                     "Cart cannot contain more than 50 different items"
             );
         }
 
-        // Добавляем товар в корзину
+        // Add product to cart / Добавляем товар в корзину
         cart.addPosition(product, quantity);
         logger.info("Product ID {} (quantity: {}) added to cart of customer ID {}",
                 productId, quantity, customerId);
@@ -311,22 +343,26 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
-     * Удаление товара из корзины покупателя
-     * @param customerId идентификатор покупателя
-     * @param productId идентификатор товара
-     * @throws EntityUpdateException если корзина пуста или товар не найден
+     * Removes product from customer's cart
+     *
+     * Удаляет товар из корзины покупателя
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @param productId product identifier / идентификатор товара
+     * @throws EntityUpdateException if cart empty or product not found
+     *                               если корзина пуста или товар не найден
      */
     @Override
     @Transactional
     public void removeProductFromCart(Long customerId, Long productId) {
-        // Проверка параметров на null
+        // Null checks / Проверка параметров на null
         Objects.requireNonNull(customerId, "Customer ID cannot be null");
         Objects.requireNonNull(productId, "Product ID cannot be null");
 
-        // Получаем покупателя
+        // Get customer / Получаем покупателя
         Customer customer = getActiveEntityById(customerId);
 
-        // Проверяем наличие корзины
+        // Check if cart exists and not empty / Проверяем наличие корзины
         if (customer == null || customer.getCart().getPositions().isEmpty()) {
             throw new EntityUpdateException(
                     String.format("Cannot remove product: Cart of customer ID %d is empty", customerId)
@@ -335,7 +371,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Cart cart = customer.getCart();
 
-        // Проверяем, есть ли такой товар в корзине
+        // Check if product exists in cart / Проверяем, есть ли такой товар в корзине
         boolean productExists = cart.getPositions().stream()
                 .anyMatch(p -> p.getProduct().getId().equals(productId));
 
@@ -346,46 +382,58 @@ public class CustomerServiceImpl implements CustomerService {
             );
         }
 
-        // Удаляем товар из корзины
+        // Remove product from cart / Удаляем товар из корзины
         cart.removePositionById(productId);
         logger.info("Product ID {} removed from cart of customer ID {}", productId, customerId);
     }
 
     /**
-     * Очистка корзины покупателя
-     * @param customerId идентификатор покупателя
-     * @throws EntityUpdateException если корзина уже пуста
+     * Clears customer's cart completely
+     *
+     * Полностью очищает корзину покупателя
+     *
+     * @param customerId customer identifier / идентификатор покупателя
+     * @throws EntityUpdateException if cart already empty / если корзина уже пуста
      */
     @Override
     @Transactional
     public void clearCart(Long customerId) {
-        // Проверка параметров на null
+        // Null check / Проверка параметров на null
         Objects.requireNonNull(customerId, "Customer ID cannot be null");
 
-        // Получаем покупателя
+        // Get customer / Получаем покупателя
         Customer customer = getActiveEntityById(customerId);
 
-        // Проверяем наличие корзины
+        // Check if cart exists and not empty / Проверяем наличие корзины
         if (customer.getCart() == null || customer.getCart().getPositions().isEmpty()) {
             throw new EntityUpdateException(
                     String.format("Cannot clear cart: Cart of customer ID %d is already empty", customerId)
             );
         }
 
-        // Очищаем корзину
+        // Clear cart / Очищаем корзину
         customer.getCart().clearCart();
         logger.info("Cart of customer ID {} cleared", customerId);
     }
 
+    /**
+     * Adds image to customer profile
+     *
+     * Добавляет изображение в профиль покупателя
+     *
+     * @param id customer identifier / идентификатор покупателя
+     * @param image image file to upload / файл изображения для загрузки
+     * @throws IOException if file processing fails / если ошибка обработки файла
+     */
     @Override
     @Transactional
     public void addImage(Long id, MultipartFile image) throws IOException {
         Objects.requireNonNull(id, "Product id cannot be null");
 
         Customer customer = getActiveEntityById(id);
-        // Здесь будет обращение к сервису файлов и получение ссылки на файл
+        // Upload file and get URL / обращение к сервису файлов. Загружаем файл и получение ссылки на файл
         String imageUrl = fileService.uploadAndGetUrl(image);
-        // Здесь будет присвоение этой ссылки найденному продукту
+        //Set image URL to customer / присвоение этой ссылки покупателю
         customer.setImageUrl(imageUrl);
     }
 }

@@ -12,6 +12,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of UserService interface
+ * Handles user registration and authentication
+ *
+ * Реализация интерфейса UserService
+ * Обрабатывает регистрацию и аутентификацию пользователей
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,6 +35,15 @@ public class UserServiceImpl implements UserService {
         this.emailService = emailService;
     }
 
+    /**
+     * Loads user by email for Spring Security authentication
+     *
+     * Загружает пользователя по email для аутентификации Spring Security
+     *
+     * @param email user's email / email пользователя
+     * @return UserDetails object for Spring Security / объект UserDetails для Spring Security
+     * @throws UsernameNotFoundException if user not found / если пользователь не найден
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = repository.findByEmail(email).orElseThrow(
@@ -39,7 +55,22 @@ public class UserServiceImpl implements UserService {
         return new AuthUserDetails(user);
     }
 
-
+    /**
+     * Registers a new user with email confirmation flow
+     * Handles three scenarios:
+     * 1. First registration - creates new unconfirmed user
+     * 2. Re-registration - user exists but not confirmed, updates password
+     * 3. Email already confirmed - throws RegistrationException
+     *
+     * Регистрирует нового пользователя с процессом подтверждения email
+     * Обрабатывает три сценария:
+     * 1. Первая регистрация - создает нового неподтвержденного пользователя
+     * 2. Повторная регистрация - пользователь существует, но не подтвержден, обновляет пароль
+     * 3. Email уже подтвержден - выбрасывает RegistrationException
+     *
+     * @param registrationDto registration data / данные регистрации
+     * @throws RegistrationException if email already confirmed / если email уже подтвержден
+     */
     @Override
     public void register(UserRegistrationDto registrationDto) {
 
@@ -50,21 +81,22 @@ public class UserServiceImpl implements UserService {
         User user = repository.findByEmail(email).orElse(null);
 
         if (user == null) {
-            // Сценарий 1 (частично)
+            // Сценарий 1 (частично) / First registration (part)
             user = new User();
             user.setEmail(email);
             user.setRole(Role.ROLE_USER);
             user.setConfirmed(false);
         } else if (user.isConfirmed()) {
-            // Сценарий 3
+            // Сценарий 3 / Email already confirmed
             throw new RegistrationException(String.format("Email %s already in use", email));
         }
-        // Общие действия для сценариев 1 и 2
+        // Общие действия для сценариев 1 и 2 (Re-registration (user exists but not confirmed))
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         user.setName(registrationDto.getName());
 
         repository.save(user);
-        // отправляем email о том, что пользователь должен подтвердить регистрацию
+
+        // Send confirmation email / отправляем email о том, что пользователь должен подтвердить регистрацию
         emailService.sendConfirmationEmail(user);
     }
 }
