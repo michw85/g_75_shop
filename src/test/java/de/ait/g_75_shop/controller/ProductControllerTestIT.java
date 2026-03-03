@@ -56,11 +56,16 @@ class ProductControllerTestIT {
     private static final String PRODUCT_RESOURCE = "/products";
     private static final String AUTH_RESOURCE = "/auth";
 
+// ===================== + Tests / ПОЗИТИВНЫЕ ТЕСТЫ =====================
 
+    /**
+     * Positive test: Save product with valid data and admin authentication
+     * Позитивный тест: Сохранение продукта с валидными данными и аутентификацией администратора
+     */
 
     @Test
     public void shouldSaveProduct() {
-        // Создаем тело запроса (им является в данном случае DTO для сохранения)
+        // reate request body / Создаем тело запроса (им является в данном случае DTO для сохранения)
         ProductSaveDto saveDto = new ProductSaveDto();
         saveDto.setTitle("Test product");
         saveDto.setPrice(new BigDecimal("777.00"));
@@ -70,54 +75,188 @@ class ProductControllerTestIT {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.COOKIE, tokenCookie);
 
-        // Создаем объект http-запроса
+        // Create cookie and headers with admin token / Создаем объект http-запроса
         HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto, httpHeaders);
 
-        // Отправляем запрос и получаем ответ (response)
+        // Send request and get response / Отправляем запрос и получаем ответ (response)
         ResponseEntity<ProductDto> response = httpClient.postForEntity(
                 PRODUCT_RESOURCE, request, ProductDto.class
         );
 
-        // Проверяем, что нам действительно пришёл ожидаемый статус ответа
+        // Verify response status / Проверяем, что нам действительно пришёл ожидаемый статус ответа
         assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Response has unexpected status");
 
-        // Проверяем корректность того, что нам пришло в теле ответа
+        // Verify response body / Проверяем корректность того, что нам пришло в теле ответа
         ProductDto dto = response.getBody();
         assertNotNull(dto, "Response body shouldn't be null");
         assertNotNull(dto.getId(), "Returned product Id shouldn't be null");
         assertEquals(saveDto.getTitle(), dto.getTitle(), "Returned product has incorrect title");
         assertEquals(saveDto.getPrice(), dto.getPrice(), "Returned product has incorrect price");
 
-        // Проверяем, что продукт корректно сохранился в БД
+        // Verify product was saved in database / Проверяем, что продукт корректно сохранился в БД
         Product savedProduct = repository.findByIdAndActiveTrue(dto.getId()).orElse(null);
         assertNotNull(savedProduct, "Product wasn't properly saved to the db");
         assertEquals(saveDto.getTitle(), savedProduct.getTitle(), "Saved product has incorrect title");
         assertEquals(saveDto.getPrice(), savedProduct.getPrice(), "Saved product has incorrect price");
     }
 
-    // Тестируем негативный сценарий - что будет, если не будет title
+    /**
+     * Positive test: Get all active products
+     * Позитивный тест: Получение всех активных продуктов
+     */
+    @Test
+    public void shouldGetAllActiveProducts() {
+        // Send request without authentication (public endpoint)
+        // Отправляем запрос без аутентификации (публичный endpoint)
+        ResponseEntity<ProductDto[]> response = httpClient.getForEntity(
+                PRODUCT_RESOURCE, ProductDto[].class
+        );
+
+        // Verify response
+        // Проверяем ответ
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
+
+        ProductDto[] products = response.getBody();
+        assertNotNull(products, "Response body shouldn't be null");
+
+        // Should return only active product (1 out of 2 created in setUp)
+        // Должен вернуться только активный продукт (1 из 2 созданных в setUp)
+        assertEquals(1, products.length, "Should return only active products");
+    }
+
+    /**
+     * Positive test: Get product by ID
+     * Позитивный тест: Получение продукта по ID
+     */
+    @Test
+    public void shouldGetProductById() {
+        // Get the active product from database
+        // Получаем активный продукт из БД
+        Product activeProduct = repository.findAllByActiveTrue().get(0);
+
+        // Send request without authentication (public endpoint)
+        // Отправляем запрос без аутентификации (публичный endpoint)
+        ResponseEntity<ProductDto> response = httpClient.getForEntity(
+                PRODUCT_RESOURCE + "/" + activeProduct.getId(), ProductDto.class
+        );
+
+        // Verify response
+        // Проверяем ответ
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
+
+        ProductDto product = response.getBody();
+        assertNotNull(product, "Response body shouldn't be null");
+        assertEquals(activeProduct.getId(), product.getId(), "Returned product has incorrect ID");
+        assertEquals(activeProduct.getTitle(), product.getTitle(), "Returned product has incorrect title");
+    }
+
+    // ===================== - Tests / НЕГАТИВНЫЕ ТЕСТЫ =====================
+
+    // Negative test: Save product with empty title / Тестируем негативный сценарий - что будет, если не будет title
     @Test
     public void shouldReturn400WhenTitleIsEmpty(){
-        // Создаем тело запроса (им является в данном случае DTO для сохранения)
+        // Create request body with empty title / Создаем тело запроса (им является в данном случае DTO для сохранения)
         ProductSaveDto saveDto = new ProductSaveDto();
         saveDto.setTitle("");
         saveDto.setPrice(new BigDecimal("777.00"));
 
-        // Создаем объект http-запроса
-        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto);
+        // Создается кука и заголовки
+        String tokenCookie = ACCESS_TOKEN_COOKIE_NAME + "=" + adminAccessToken;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.COOKIE, tokenCookie);
 
-        // Отправляем запрос и получаем ответ (response)
+        // Create request with admin token (important! without token will get 403) Создаем объект http-запроса
+        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto, httpHeaders);
+
+        // Send request and get response / Отправляем запрос и получаем ответ (response)
         ResponseEntity<String> response = httpClient.postForEntity(
                 PRODUCT_RESOURCE, request, String.class
         );
 
-        // Проверяем, что нам действительно пришёл ожидаемый статус ответа
+        // Verify response status - should be 400 BAD REQUEST, not 403 / Проверяем, что нам действительно пришёл ожидаемый статус ответа
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Response has unexpected status");
 
-        // Проверяем корректность того, что нам пришло в теле ответа
+        // Verify response body contains error message / Проверяем корректность того, что нам пришло в теле ответа
         String body = response.getBody();
         assertNotNull(body, "Response body shouldn't be null");
         assertTrue(body.contains("title"), "Response body doesn't contain expected message");
+    }
+
+    /**
+     * Negative test: Save product with title that doesn't match pattern
+     * Негативный тест: Сохранение продукта с названием, не соответствующим паттерну
+     */
+    @Test
+    public void shouldReturn400WhenTitleInvalid() {
+        // Create request body with invalid title (lowercase)
+        // Создаем тело запроса с неверным названием (строчные буквы)
+        ProductSaveDto saveDto = new ProductSaveDto();
+        saveDto.setTitle("invalid title"); // Should start with capital letter
+        saveDto.setPrice(new BigDecimal("777.00"));
+
+        // Создается кука и заголовки
+        String tokenCookie = ACCESS_TOKEN_COOKIE_NAME + "=" + adminAccessToken;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.COOKIE, tokenCookie);
+
+        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto, httpHeaders);
+
+        ResponseEntity<String> response = httpClient.postForEntity(
+                PRODUCT_RESOURCE, request, String.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
+                "Response has unexpected status");
+    }
+
+    /**
+     * Negative test: Save product with negative price
+     * Негативный тест: Сохранение продукта с отрицательной ценой
+     */
+    @Test
+    public void shouldReturn400WhenPriceIsNegative() {
+        ProductSaveDto saveDto = new ProductSaveDto();
+        saveDto.setTitle("Valid Title");
+        saveDto.setPrice(new BigDecimal("-10.00"));
+
+        // Создается кука и заголовки
+        String tokenCookie = ACCESS_TOKEN_COOKIE_NAME + "=" + adminAccessToken;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.COOKIE, tokenCookie);
+
+        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto, httpHeaders);
+
+        ResponseEntity<String> response = httpClient.postForEntity(
+                PRODUCT_RESOURCE, request, String.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
+                "Response has unexpected status");
+    }
+
+    /**
+     * Negative test: Save product with price exceeding maximum
+     * Негативный тест: Сохранение продукта с ценой превышающей максимум
+     */
+    @Test
+    public void shouldReturn400WhenPriceTooHigh() {
+        ProductSaveDto saveDto = new ProductSaveDto();
+        saveDto.setTitle("Valid Title");
+        saveDto.setPrice(new BigDecimal("10000.00")); // > 1000
+
+        // Создается кука и заголовки
+        String tokenCookie = ACCESS_TOKEN_COOKIE_NAME + "=" + adminAccessToken;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.COOKIE, tokenCookie);
+
+        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto, httpHeaders);
+
+        ResponseEntity<String> response = httpClient.postForEntity(
+                PRODUCT_RESOURCE, request, String.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
+                "Response has unexpected status");
     }
 
     // Метод для заполнения базы данных тестовыми объектами перед выполнением каждого теста
