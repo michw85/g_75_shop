@@ -1,22 +1,35 @@
 package de.ait.g_75_shop.controller;
 
+import de.ait.g_75_shop.constants.Constants;
 import de.ait.g_75_shop.domain.Product;
+import de.ait.g_75_shop.domain.User;
+import de.ait.g_75_shop.domain.enums.Role;
 import de.ait.g_75_shop.dto.product.ProductDto;
 import de.ait.g_75_shop.dto.product.ProductSaveDto;
 import de.ait.g_75_shop.repository.ProductRepository;
+import de.ait.g_75_shop.repository.UserRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.crypto.SecretKey;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
+import static de.ait.g_75_shop.constants.Constants.ACCESS_TOKEN_COOKIE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,6 +41,18 @@ class ProductControllerTestIT {
     @Autowired
     private ProductRepository repository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${KEY_PHRASE_ACCESS}")
+    private String accessPhrase;
+
+    private String adminAccessToken;
+
+    // Повторяющиеся значения в разных методах рекомендуется вносить в константы класса
     private static final String PRODUCT_RESOURCE = "/products";
 
     @Test
@@ -37,8 +62,13 @@ class ProductControllerTestIT {
         saveDto.setTitle("Test product");
         saveDto.setPrice(new BigDecimal("777.00"));
 
+        // Создается кука и заголовки
+        String tokenCookie = ACCESS_TOKEN_COOKIE_NAME + "=" + adminAccessToken;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.COOKIE, tokenCookie);
+
         // Создаем объект http-запроса
-        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto);
+        HttpEntity<ProductSaveDto> request = new HttpEntity<>(saveDto, httpHeaders);
 
         // Отправляем запрос и получаем ответ (response)
         ResponseEntity<ProductDto> response = httpClient.postForEntity(
@@ -103,9 +133,39 @@ class ProductControllerTestIT {
         repository.saveAll(List.of(activeProduct, inActiveProduct));
     }
 
+    @BeforeEach
+    public void setUp() {
+        addUsersToDB();
+        createAdminAccessToken();
+    }
+
+    private void createAdminAccessToken() {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + 60000); // 60 секунд
+
+        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(accessPhrase));
+
+        adminAccessToken = Jwts.builder()
+                .subject("admin@test.com")
+                .expiration(expiration)
+                .signWith(secretKey)
+                .compact();
+    }
+
+    private void addUsersToDB() {
+        User admin = new User();
+        admin.setEmail("admin@test.com");
+        admin.setPassword(passwordEncoder.encode("adminPass"));
+        admin.setName("Admin");
+        admin.setRole(Role.ROLE_ADMIN);
+        admin.setConfirmed(true);
+        userRepository.save(admin);
+    }
+
     // Метод для очистки БД после каждого теста
     @AfterEach
     public void cleanDatabase(){
         repository.deleteAll();
+        userRepository.deleteAll();
     }
 }

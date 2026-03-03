@@ -26,10 +26,15 @@ spring:
             trust: smtp.gmail.com
 
 server:
+  host: localhost
   port: 8081
+
 
 logging:
   file:
     name: logs/log.log
   level:
     root: info
+
+security:
+  csrf-enabled: true

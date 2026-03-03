@@ -19,7 +19,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 /**
  * Spring Security configuration class
  * Defines security rules, filters, and authentication mechanisms
- *
+ * <p>
  * Класс конфигурации Spring Security
  * Определяет правила безопасности, фильтры и механизмы аутентификации
  */
@@ -28,13 +28,14 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("${security")
-    private boolean csrfEnable;
+    // По умолчанию система csrf будет работать
+    @Value("${security.csrf-enabled:true}")
+    private boolean csrfEnabled;
 
     /**
      * Creates BCrypt password encoder bean
      * Used for password encryption and verification
-     *
+     * <p>
      * Создает бин для BCrypt кодирования паролей
      * Используется для шифрования и проверки паролей
      *
@@ -49,12 +50,12 @@ public class SecurityConfig {
      * Configures security filter chain
      * Defines which endpoints are public, which require authentication,
      * and adds JWT token filter
-     *
+     * <p>
      * Настраивает цепочку фильтров безопасности
      * Определяет, какие endpoint'ы публичные, какие требуют аутентификации,
      * и добавляет JWT токен фильтр
      *
-     * @param http HttpSecurity configuration / конфигурация HttpSecurity
+     * @param http   HttpSecurity configuration / конфигурация HttpSecurity
      * @param filter JWT token filter / JWT токен фильтр
      * @return configured SecurityFilterChain / настроенная цепочка фильтров безопасности
      * @throws Exception if configuration fails / если конфигурация не удалась
@@ -63,20 +64,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, TokenFilter filter) throws Exception {
         return http
                 // Disable CSRF protection (not needed for REST API with JWT)
-        // Отключаем защиту CSRF (не нужна для REST API с JWT)
+                // Отключаем защиту CSRF (не нужна для REST API с JWT)
 //                .csrf(AbstractHttpConfigurer::disable) - если оставить token в cookie есть опасность csrf-атаки
-                .csrf(x -> x
-                        // внутренний репозиторий Spring security для csrf Token
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        // исключаем эндпоинты из csrf-защиты
-                        .ignoringRequestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/auth/login",
-                                "/auth/access",
-                                "/auth/logout"
-                        )
+                .csrf(x -> {
+                            if (csrfEnabled) {
+                                        // внутренний репозиторий Spring security для csrf Token
+                                x.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                                        // исключаем эндпоинты из csrf-защиты
+                                        .ignoringRequestMatchers(
+                                                "/v3/api-docs/**",
+                                                "/swagger-ui/**",
+                                                "/swagger-ui.html",
+                                                "/auth/login",
+                                                "/auth/access",
+                                                "/auth/logout"
+                                        );
+                            } else {
+                                x.disable();
+                            }
+                        }
+
                 )
                 // Set session management to stateless (no sessions, each request authenticated separately)
                 // Устанавливаем управление сессиями как stateless (без сессий, каждый запрос аутентифицируется отдельно)
@@ -102,8 +109,8 @@ public class SecurityConfig {
                         // Эндпоинты аутентификации/регистрации  - публичные
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll() // даем всем доступ к логину
                         .requestMatchers(HttpMethod.POST, "/auth/access").permitAll() // даем всем доступ к авторизации
-                        .requestMatchers(HttpMethod.GET, "/auth/csrf").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll() // даем всем доступ к logout
+                        .requestMatchers(HttpMethod.GET, "/auth/csrf").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
 
