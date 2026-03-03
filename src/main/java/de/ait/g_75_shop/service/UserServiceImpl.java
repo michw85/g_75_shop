@@ -30,9 +30,9 @@ public class UserServiceImpl implements UserService {
      * Constructor with dependency injection
      * Конструктор с внедрением зависимости
      *
-     * @param repository user repository / репозиторий пользователей
-     * @param passwordEncoder password encoder / кодировщик паролей
-     * @param emailService email service / сервис email
+     * @param repository user repository for database operations / репозиторий пользователей для операций с БД
+     * @param passwordEncoder password encoder for secure password hashing / кодировщик для безопасного хеширования паролей
+     * @param emailService  email service for sending confirmation emails / email сервис для отправки писем подтверждения
      */
     public UserServiceImpl(
             UserRepository repository,

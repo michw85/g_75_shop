@@ -52,8 +52,11 @@ class ProductControllerTestIT {
 
     private String adminAccessToken;
 
-    // Повторяющиеся значения в разных методах рекомендуется вносить в константы класса
+    // Base URLs / Повторяющиеся значения в разных методах рекомендуется вносить в константы класса
     private static final String PRODUCT_RESOURCE = "/products";
+    private static final String AUTH_RESOURCE = "/auth";
+
+
 
     @Test
     public void shouldSaveProduct() {
