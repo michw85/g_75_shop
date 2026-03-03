@@ -49,6 +49,12 @@ public class ConfirmationCode {
     public ConfirmationCode() {
     }
 
+    public ConfirmationCode(String value, LocalDateTime expiration, User user) {
+        this.value = value;
+        this.expiration = expiration;
+        this.user = user;
+    }
+
     // Getters and setters / Геттеры и сеттеры
     public Long getId() {
         return id;

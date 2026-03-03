@@ -1,6 +1,5 @@
 package de.ait.g_75_shop.security.filter;
 
-import de.ait.g_75_shop.constants.Constants;
 import de.ait.g_75_shop.security.service.TokenService;
 import de.ait.g_75_shop.service.interfaces.UserService;
 import io.jsonwebtoken.Claims;

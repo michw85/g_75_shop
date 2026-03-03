@@ -266,4 +266,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles EmailSendingException (errors during user-registration email)
+     * Returns 500 INTERNAL SERVER ERROR
+     *
+     * Обработка исключения EmailSendingException (ошибка при отправке письма-подтверждения регистрации пользователю)
+     * Возвращает 500 INTERNAL SERVER ERROR
+     * Логируется на уровне ERROR
+     *
+     * @param e the exception / исключение
+     * @return response with 500 status and status-message / ответ со статусом 500 и status-сообщением. Логгируем сообщение только для разработчика
+     */
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<String> handleException(EmailSendingException e) {
+        String message = e.getMessage();
+        logger.error(message, e);
+        return new ResponseEntity<>(
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

@@ -3,6 +3,7 @@ package de.ait.g_75_shop.controller;
 import de.ait.g_75_shop.dto.user.UserRegistrationDto;
 import de.ait.g_75_shop.service.interfaces.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +33,9 @@ public class UserController {
      * @param registrationDto user registration data / данные регистрации пользователя
      * @return confirmation message with email instructions / сообщение с инструкциями по email
      */
+
     @PostMapping("/register")
-    public String register(UserRegistrationDto registrationDto) {
+    public String register(@RequestBody UserRegistrationDto registrationDto) {
         // обращение к сервису
         service.register(registrationDto);
         return "Registration complete. Please check your email.";

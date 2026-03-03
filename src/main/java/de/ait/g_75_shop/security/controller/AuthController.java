@@ -108,7 +108,7 @@ public class AuthController {
         response.addCookie(refreshCookie);
     }
 
-    // Отправка клиенту Csrf Token
+    // Отправка клиенту Csrf Token (Spring security)
     @GetMapping("/csrf")
     public CsrfToken csrfToken(CsrfToken csrfToken) {
         return csrfToken;
